@@ -1,3 +1,5 @@
+
+
 function deleteMember($id){
     $.ajax({
         type : 'get',
@@ -18,7 +20,18 @@ function deleteMember($id){
 })
 }
 function updateMember($id , $option , $value){
-    $("#"+$option+$id).attr('contenteditable','false');
+    console.log(`id: ${$id}`);
+    console.log(typeof($id));
+    console.log(`option: ${$option}`);
+    console.log(`value: ${$value}`);
+
+    if($option != "position"){
+        $("#"+$option+$id).attr('contenteditable','false');
+    }else{
+        $("#position"+$id).css('display','block');
+        $("#position-edit"+$id).css('display','none');
+    }
+
     $.ajax({
         type : 'get',
         url : '/admin/update-member',
@@ -29,7 +42,7 @@ function updateMember($id , $option , $value){
          },
         success:function(data){
         $('div.flash-message').html(data);
-        console.log("done");
+       // console.log("done");
 
         },
         error: function (xhr, status, error) {
@@ -40,6 +53,7 @@ function updateMember($id , $option , $value){
 
 }
 function updateName($id){
+
     $("#name"+$id).attr('contenteditable','true');
     var input = document.getElementById("name"+$id);
 
@@ -82,5 +96,33 @@ function updatePhone($id){
         }
       });
 }
+function updatePosition($id){
+    $("#position"+$id).css('display','none');
+    $("#position-edit"+$id).css('display','block');
+    var input = document.getElementById("positionD"+$id);
+    input.addEventListener("change", function(event) {
+
+           $msg = "positionD"+$id+" :selected"
+
+    //console.log();
+          updateMember($id,"position",$('#'+$msg).text())
+
+         $("#position"+$id).text($('#'+$msg).text());
+      });
+
+}
+
+// function switchT($id,$stage){
+//     if($stage == 1){
+//          $stage = 0;
+//     }else{
+//          $stage = 1;
+//     }
+//     updateMember($id,"stage",$stage);
+// }
 
 
+function switchT(id, stage){
+    stage = stage ? 0 : 1;
+    updateMember(id, "stage", stage);
+}

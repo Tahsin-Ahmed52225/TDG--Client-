@@ -10,7 +10,7 @@
 @section('content')
 
 
-<div class="content d-flex flex-column flex-column-fluid" id="kt_content" style="padding-top: 0px;">
+<div class="content d-flex flex-column flex-column-fluid " id="kt_content" style="padding-top: 0px;" >
     <!--begin::Entry-->
     <div class="d-flex flex-column-fluid">
         <!--begin::Container-->
@@ -108,48 +108,58 @@
                                 <th>Phone</th>
                                 <th>Position</th>
                                 <th>Stage</th>
-                                <th>Status</th>
                                 <th>Actions</th>
                               </tr>
 
                         </thead>
                         <tbody >
+
                             @foreach ($users as $values )
-                                <tr id="row{{ $values->id }}">
+                                <tr id="row{{ $values->id }}" >
 
                                     <td style="padding: 17px 5px !important;">{{ $values->id }}</td>
                                     <td id="name{{ $values->id }}"  style="padding: 17px 5px !important;"  ondblclick="updateName({!! $values->id !!})">{{ $values->name }}</td>
                                     <td id="email{{ $values->id }}" style="padding: 17px 5px !important;" ondblclick="updateEmail({!! $values->id !!})">{{ $values->email }}</td>
                                     <td id="number{{ $values->id }}"  style="padding: 17px 5px !important;" ondblclick="updatePhone({!! $values->id !!})">{{ $values->number }}</td>
-                                    <td  style="padding: 17px 5px !important;">{{ $values->position }}</td>
+                                    <td  style="padding: 17px 5px !important;">
+
+                                        <div  style="display:none;" id="position-edit{{ $values->id }}">
+                                             <select style="border:none" id="positionD{{ $values->id }}">
+                                                 <option >Manager</option>
+                                                 <option >Web developer</option>
+                                                 <option >Designer</option>
+                                                 <option >Content Writer</option>
+                                                 <option>Support</option>
+                                             </select>
+                                        </div>
+                                       <div id="position{{ $values->id }}" ondblclick="updatePosition({!! $values->id !!})">
+                                           {{ $values->position }}
+                                       </div>
+
+
+                                    </td>
                                     @if($values->verified == 1)
                                            <td  style="padding: 17px 5px !important;" class="text-success">Verified</td>
                                     @else
                                            <td style="padding: 17px 5px !important;"  class="text-warning">Not Verified</td>
                                     @endif
-                                    @if($values->stage == 1)
-                                           <td style="padding: 17px 5px !important;"  class="text-success">Unlocked</td>
-                                    @else
-                                           <td  style="padding: 17px 5px !important;" class="text-warning">Locked</td>
-                                    @endif
                                     <td >
 
                                         <div class="row">
-                                            <div class="col d-flex align-items-center justify-content-end">
-                                                <i class="far fa-edit p_icon"></i>
-                                            </div>
-
-                                            <div class="col d-flex align-items-center" onclick="deleteMember({!! $values->id !!})">
+                                            <div class="col d-flex align-items-center justify-content-end   " onclick="deleteMember({!! $values->id !!})">
                                                 <i class="fas fa-trash-alt p_icon"></i>
                                             </div>
-                                            <div class="col d-flex align-items-center justify-content-start">
-                                                <input type="checkbox" checked  data-on="Lock" data-off="Unlock" data-toggle="toggle"  data-width="95" data-height="10">
+
+                                            <div class="col d-flex align-items-center justify-content-start" >
+                                                <input class="switchT" data-stage={{ $values->stage }}  data-user = {{ $values->id }}  id="toggle{{ $values->id }}" type="checkbox" data-on="Lock" data-off="Unlock" data-toggle="toggle"  data-width="95" data-height="10" data-offstyle="danger" <?php if($values->stage == 1) echo "checked";?> >
                                             </div>
+
+
+
                                         </div>
                                     </td>
                                 </tr>
                             @endforeach
-
                         </tbody>
                     </table>
                     <!--end: Datatable-->
@@ -176,5 +186,14 @@
 		<script src="{{ asset("assets/js/pages/crud/datatables/data-sources/html.js") }}"></script>
 		<!--end::Page Scripts-->
         <script src="{{ asset("dev-assets/script.js") }}"></script>
+
+        <script>
+                $(document).on('click', '.toggle', function () {
+                    let id = $(this).children(".switchT").attr("data-user");
+                    let stage = $(this).children(".switchT").attr("checked");
+                    switchT(id, stage);
+                });
+
+        </script>
 
 @endsection

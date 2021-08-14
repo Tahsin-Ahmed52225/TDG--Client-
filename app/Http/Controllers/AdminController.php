@@ -131,6 +131,23 @@ class AdminController extends Controller
                         Session::flash('error', "Enter valid email");
                         return View::make('partials/flash_message');
                     }
+                } else if ($request->option == "number") {
+                    if (filter_var($request->value, FILTER_VALIDATE_INT)) {
+                        if ($user) {
+                            $option = $request->option;
+                            $user->$option =  filter_var($request->value, FILTER_VALIDATE_INT);
+                            $user->save();
+                            $msg = ucwords($request->option) . " updated successfully";
+                            Session::flash('success', $msg);
+                            return View::make('partials/flash_message');
+                        } else {
+                            Session::flash('error', "Something went wrong");
+                            return View::make('partials/flash_message');
+                        }
+                    } else {
+                        Session::flash('error', "Incorrect input");
+                        return View::make('partials/flash_message');
+                    }
                 } else {
                     if ($user) {
                         $option = $request->option;
@@ -140,7 +157,7 @@ class AdminController extends Controller
                         Session::flash('success', $msg);
                         return View::make('partials/flash_message');
                     } else {
-                        Session::flash('success', "Something went wrong");
+                        Session::flash('error', "Something went wrong");
                         return View::make('partials/flash_message');
                     }
                 }
