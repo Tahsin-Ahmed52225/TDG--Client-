@@ -4,6 +4,8 @@ namespace App\Http\Middleware;
 
 use Closure;
 
+use Illuminate\Support\Facades\Auth;
+
 class ManagerMiddleware
 {
     /**
@@ -15,6 +17,10 @@ class ManagerMiddleware
      */
     public function handle($request, Closure $next)
     {
-        return $next($request);
+        if (Auth::user()->isManager()) {
+            return $next($request);
+        }
+        Auth::logout();
+        return redirect('/login')->with(session()->flash('alert-danger', 'Non Permitted Route'));
     }
 }

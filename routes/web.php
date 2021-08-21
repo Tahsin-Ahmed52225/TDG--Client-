@@ -54,4 +54,10 @@ Route::prefix('employee')->name('employee.')->middleware(['auth', 'employee'])->
 //Manager Route
 Route::prefix('manager')->name('manager.')->middleware(['auth', 'manager'])->group(function () {
     Route::match(['get', 'post'], '/dashboard', 'ManagerController@index')->name('dashboard');
+
+    #Projects Route
+    Route::match(['get', 'post'], '/add-project', 'ProjectController@addProject')->name('add_project');
+    ##  Add projects links
+    Route::post('/all-member', 'ProjectController@allMember')->name("all_member");
+    Route::match(['get', 'post'], '/view-projects', 'ProjectController@viewProject')->name('view_project');
 });

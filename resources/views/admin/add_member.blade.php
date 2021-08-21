@@ -1,5 +1,7 @@
 @extends('layouts.admin_layout')
 
+
+
 @section('content')
 <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
     <!--begin::Entry-->
@@ -58,11 +60,11 @@
                         <div class="form-group col-md-6">
                             <label for="exampleSelect1">Select designation <span class="text-danger">*</span></label>
                             <select class="form-control" id="exampleSelect1" name="tdg_position">
-                                <option value="manager">Manager</option>
-                                <option value="web developer">Web Developer</option>
-                                <option value="desiger">Designer</option>
-                                <option value="content writer">Content Writer</option>
-                                <option value="support">Support</option>
+                                <option value="Manager">Manager</option>
+                                <option value="Web developer">Web Developer</option>
+                                <option value="Desiger">Designer</option>
+                                <option value="Content writer">Content Writer</option>
+                                <option value="Support">Support</option>
                             </select>
                         </div>
 

@@ -178,9 +178,9 @@ class AuthController extends Controller
                     } else {
                         if (Auth::user()->role == "employee" || Auth::user()->role == "admin") {
                             if (Auth::user()->stage == 1) {
-                                if (Auth::user()->role == "employee" && Auth::user()->position == "manager") {
+                                if (Auth::user()->role == "employee" && Auth::user()->position == "Manager") {
                                     return redirect('/manager/dashboard');
-                                } else if (Auth::user()->role == "employee" && Auth::user()->position != "manager") {
+                                } else if (Auth::user()->role == "employee" && Auth::user()->position != "Manager") {
                                     return redirect('/employee/dashboard');
                                 } else if (Auth::user()->role == "admin") {
                                     return redirect('/admin/dashboard');
@@ -210,7 +210,7 @@ class AuthController extends Controller
                 return redirect('/login');
             } else {
                 Auth::logout();
-                return redirect('/employee_login');
+                return redirect('/tdg-login');
             }
         } else {
             return view("welcome");
