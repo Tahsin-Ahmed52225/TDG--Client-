@@ -25,7 +25,7 @@ class CreateProject extends Migration
             $table->integer("payment_amount")->nullable();
             $table->integer("manager_id");
             $table->integer("client_id")->nullable();
-            $table->string("project_files")->nullable();
+            $table->string('project_files', 255)->nullable();
             $table->timestamps();
         });
     }

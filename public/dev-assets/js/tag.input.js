@@ -105,7 +105,6 @@
             for (var i = 0; i < items.length; i++) {
               this.add(items[i], true);
             }
-
             if (!dontPushVal)
               self.pushVal(self.options.triggerChange);
             return;
@@ -264,6 +263,7 @@
        * Returns the items added as tags
        */
       items: function() {
+        //console.log(this.itemsArray);
         return this.itemsArray;
       },
 
@@ -682,6 +682,7 @@
 
         return found;
     }
+
 
     /**
      * Initialize tagsinput behaviour on inputs and selects which have

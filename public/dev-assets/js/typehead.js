@@ -12,21 +12,10 @@ $(document).ready(function(){
             data:{
                 que : que ,
             },
-            dataType: "json",
+         //   dataType: "json",
             success:function(data){
-
-                // result($map(data,function(item){
-                   // console.log(data);
-                    if(data.length == 0){
-                        console.log(data);
-                         result (["Hello"]) ;
-                    }else{
-                        console.log(data);
-                        result (data);
-                    }
-
-                // }));
-
+                       // console.log(data);
+                        result(data);
             },
             error: function (xhr, status, error) {
                 console.log(xhr.responseText);

@@ -1,6 +1,11 @@
 #assign_input{
     width: 100%;
 }
+.priority{
+    height: 13px;
+    width: 50px;
+    border-radius: 0px 10px 10px 0px;
+}
 
 /*
  * bootstrap-tagsinput v0.8.0
