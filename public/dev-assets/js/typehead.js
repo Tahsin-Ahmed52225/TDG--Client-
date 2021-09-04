@@ -14,8 +14,9 @@ $(document).ready(function(){
             },
          //   dataType: "json",
             success:function(data){
-                       // console.log(data);
-                        result(data);
+                let tempData = [];
+                data.map(item => tempData.push(`${item.id}. ${item.name}`))
+                result(tempData);
             },
             error: function (xhr, status, error) {
                 console.log(xhr.responseText);

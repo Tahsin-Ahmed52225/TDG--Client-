@@ -2851,7 +2851,7 @@
         <script src="{{ asset("assets/plugins/global/plugins.bundle.js") }}"></script>
         <script src="{{ asset("assets/plugins/custom/prismjs/prismjs.bundle.js") }}"></script>
         <script src="{{ asset("assets/js/scripts.bundle.js") }}"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-compat/3.0.0-alpha1/jquery.js"></script>
+
         @yield("scripts")
 	</body>
 

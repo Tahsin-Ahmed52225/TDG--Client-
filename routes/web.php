@@ -57,7 +57,17 @@ Route::prefix('manager')->name('manager.')->middleware(['auth', 'manager'])->gro
 
     #Projects Route
     Route::match(['get', 'post'], '/add-project', 'ProjectController@addProject')->name('add_project');
-    ##  Add projects links
-    Route::post('/all-member', 'ProjectController@allMember')->name("all_member");
+    Route::get('/delete-project/{id}', 'ProjectController@deleteProject')->name("delete_project");
+    Route::get('/undo-project/{id}', 'ProjectController@undoProject')->name('undo_Project');
+    Route::get('/mcp/{id}', 'ProjectController@markComplete')->name('mark_Complete');
+    ##
     Route::match(['get', 'post'], '/view-projects', 'ProjectController@viewProject')->name('view_project');
+    Route::match(['get', 'post'], '/projects/{id}', 'ProjectController@singleProject')->name('single_project');
+
+    ######Additional helping routes for projects
+    Route::post('/all-member', 'ProjectController@allMember')->name("all_member");
+    Route::post('/sort-by-month', 'ProjectController@sortBymonth')->name("sort_by_month");
+    Route::post('/sort-by-year', 'ProjectController@sortByYear')->name("sort_by_year");
+    Route::post('/sort-by-both', 'ProjectController@sortByBoth')->name("sort_by_both");
+    Route::post('/search-project', 'ProjectController@searchProject')->name("search_project");
 });

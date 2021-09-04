@@ -9,17 +9,37 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
 use App\User;
 use App\Project;
+use Illuminate\Support\Carbon;
 
 class ProjectController extends Controller
 {
     public function addProject(Request $request)
     {
         if ($request->isMethod("GET")) {
-            $record = Project::orderBy('due_date', 'desc')->take(3)->get();
-            return view("manager.add_project", ['record' => $record]);
+            $record = Project::take(3)->orderBy('due_date', 'desc')->get();
+            // dd($record);
+            //dd(json_decode($record[0]->project_files)[1]);
+            //Converting the string into id array
+            $user = [];
+            for ($i = 0; $i < sizeof($record); $i++) {
+                $record[$i]->assign_employee = rtrim($record[$i]->assign_employee, ", ");
+                $user[$i] = User::find(explode(",", $record[$i]->assign_employee));
+            }
+            //  dd($user);
+            return view("manager.add_project", ['record' => $record, 'user' => $user]);
         } else if ($request->isMethod("POST")) {
+
+
+
             $data['project_name'] = $request->tdg_project_name;
-            $data['assignee_member'] = $request->tdg_assignee_member;
+            $ids = '';
+            //Modifining input value into id string
+            preg_match_all('!\d+!', $request->tdg_assignee_member, $id);
+            for ($i = 0; $i < sizeof($id[0]); $i++) {
+                $ids .= (string)$id[0][$i] . ',';
+            }
+
+            $data['assignee_member'] = $ids;
             $data['due_date'] = $request->tdg_project_date;
             $data['status'] = $request->tdg_project_status;
             $data['priority'] = $request->tdg_project_priority;
@@ -79,13 +99,46 @@ class ProjectController extends Controller
             return View::make('partials/flash_message');
         }
     }
-    public function viewProject(Request $request)
+    public function deleteProject(Request $request, $id)
     {
+        if ($request->isMethod("GET")) {
+            $project = Project::find($id);
+            if ($project) {
+                $project->delete();
+                $request->session()->put('id_value', $id);
+                return redirect()->back()->with(session()->flash('alert-delete_msg', 'Project delete successfully! '));
+            } else {
+                return redirect()->back()->with(session()->flash('alert-undoed', 'Something went wrong! '));
+            }
+        }
+    }
+    public function undoProject(Request $request, $id)
+    {
+        if ($request->isMethod("GET")) {
+            $project = Project::withTrashed()->find($id);
+            //dd($project);
+            if ($project->trashed()) {
+                $project->restore();
+                return redirect()->back()->with(session()->flash('alert-undoed', 'Project restored successfully! '));
+            } else {
+            }
+        }
+    }
+    public function markComplete(Request $request, $id)
+    {
+        if ($request->isMethod("GET")) {
+            if (Project::find($id)) {
+                Project::find($id)->update(["status" => "complete"]);
+                return redirect()->back();
+            } else {
+                return redirect()->back()->with(session()->flash('alert-undoed', 'Something went wrong! '));
+            }
+        }
     }
     public function allMember(Request $request)
     {
         if ($request->isMethod("POST")) {
-            $name = User::where('name', 'like', "%" . $request->que . "%")->get("name");
+            $name = User::where('name', 'like', "%" . $request->que . "%")->get(["id", "name"]);
             if (!$name->isEmpty()) {
                 return $name;
             } else {
@@ -94,6 +147,284 @@ class ProjectController extends Controller
                 ]];
                 return $data;
             }
+        }
+    }
+    public function viewProject(Request $request)
+    {
+        if ($request->isMethod("GET")) {
+            $record = Project::all();
+            $user = [];
+            for ($i = 0; $i < sizeof($record); $i++) {
+                $record[$i]->assign_employee = rtrim($record[$i]->assign_employee, ", ");
+                $user[$i] = User::find(explode(",", $record[$i]->assign_employee));
+            }
+            //     dd($user);
+            return view("manager.view_project", ['record' => $record, 'user' => $user]);
+            // $record = Project::take(3)->orderBy('due_date', 'desc')->get();
+            // // dd($record);
+            // //dd(json_decode($record[0]->project_files)[1]);
+            // //Converting the string into id array
+
+            // return view("manager.view_project", ['record' => $record, 'user' => $user]);
+            // // return view("manager.view_project");
+        } else {
+            return redirect('/');
+        }
+    }
+    public function sortBymonth(Request $request)
+    {
+        if ($request->isMethod("POST")) {
+            $record = Project::whereMonth('created_at', $request->month)->get();
+            // dd($record);
+            $user = [];
+            for ($i = 0; $i < sizeof($record); $i++) {
+                $record[$i]->assign_employee = rtrim($record[$i]->assign_employee, ", ");
+                $user[$i] = User::find(explode(",", $record[$i]->assign_employee));
+            }
+            //  dd(sizeof($user[0]));
+            $names = [];
+
+            for ($i = 0; $i < sizeof($user); $i++) {
+                $names[$i] = '';
+                for ($j = 0; $j < sizeof($user[$i]); $j++) {
+
+                    $names[$i] .=  '<span class="tool" data-tip="' .   $user[$i][$j]->name . ' | ' . $user[$i][$j]->position . '">' .
+                        '<i style="font-size: 25px;" class="far fa-user-circle"></i>' .
+                        '</span>';
+                }
+            }
+
+
+
+            if ($record) {
+                $data = '';
+                $k = 0;
+                foreach ($record as $item) {
+                    if ($item->status == 'complete') {
+                        $icon = '<i class="fas fa-check-circle pr-2 text-success" style="font-size:20px"></i>';
+                    } else {
+                        $icon =     '<a href="./mcp/' . $item->id . '">'
+                            . '<i class="far fa-check-circle pr-2 grow" style="font-size:20px"></i>' .
+                            '</a>';
+                    }
+                    $url = "'" . "./projects/" . $item->id . "'";
+                    $data .=  '<tr id="row"' . 'onclick="window.location=' . $url . '";>' .
+                        '<td id="name"' . 'style="padding: 17px 10px !important; width:50%;">' .
+                        $icon .
+                        $item->name .
+                        '</td>' .
+                        '<td>' . $names[$k] . '</td>' .
+                        '<td>' . Carbon::parse($item->due_date)->format('d-m-Y')  . '</td>' .
+                        '<td>' . $item->priority  . '</td>' .
+                        '<td>' . $item->status  . '</td>' .
+                        '</tr>';
+                    $k++;
+                }
+                // dd($data);
+                return  Response($data);
+            }
+            // if (!$record->isEmpty()) {
+            //     return $record;
+            // } else {
+            //     // $data = [[
+            //     //     "name" => "No record Found",
+            //     // ]];
+            //     // return $data;
+            // }
+        }
+    }
+    public function sortByYear(Request $request)
+    {
+        if ($request->isMethod("POST")) {
+            $record = Project::whereYear('created_at', $request->year)->get();
+            // dd($record);
+            $user = [];
+            for ($i = 0; $i < sizeof($record); $i++) {
+                $record[$i]->assign_employee = rtrim($record[$i]->assign_employee, ", ");
+                $user[$i] = User::find(explode(",", $record[$i]->assign_employee));
+            }
+            //  dd(sizeof($user[0]));
+            $names = [];
+
+            for ($i = 0; $i < sizeof($user); $i++) {
+                $names[$i] = '';
+                for ($j = 0; $j < sizeof($user[$i]); $j++) {
+
+                    $names[$i] .=  '<span class="tool" data-tip="' .   $user[$i][$j]->name . ' | ' . $user[$i][$j]->position . '">' .
+                        '<i style="font-size: 25px;" class="far fa-user-circle"></i>' .
+                        '</span>';
+                }
+            }
+
+
+
+            if ($record) {
+                $data = '';
+                $k = 0;
+                foreach ($record as $item) {
+                    if ($item->status == 'complete') {
+                        $icon = '<i class="fas fa-check-circle pr-2 text-success" style="font-size:20px"></i>';
+                    } else {
+                        $icon =     '<a href="./mcp/' . $item->id . '">'
+                            . '<i class="far fa-check-circle pr-2 grow" style="font-size:20px"></i>' .
+                            '</a>';
+                    }
+                    $url = "'" . "./projects/" . $item->id . "'";
+                    $data .=  '<tr id="row"' . 'onclick="window.location=' . $url . '";>' .
+                        '<td id="name"' . 'style="padding: 17px 10px !important; width:50%;">' .
+                        $icon .
+                        $item->name .
+                        '</td>' .
+                        '<td>' . $names[$k] . '</td>' .
+                        '<td>' . Carbon::parse($item->due_date)->format('d-m-Y')  . '</td>' .
+                        '<td>' . $item->priority  . '</td>' .
+                        '<td>' . $item->status  . '</td>' .
+                        '</tr>';
+                    $k++;
+                }
+                // dd($data);
+                return  Response($data);
+            }
+            // if (!$record->isEmpty()) {
+            //     return $record;
+            // } else {
+            //     // $data = [[
+            //     //     "name" => "No record Found",
+            //     // ]];
+            //     // return $data;
+            // }
+        }
+    }
+    public function sortByBoth(Request $request)
+    {
+        if ($request->isMethod("POST")) {
+            $record = Project::whereYear('created_at', $request->year)
+                ->whereMonth('created_at', $request->month)->get();
+            // dd($record);
+            $user = [];
+            for ($i = 0; $i < sizeof($record); $i++) {
+                $record[$i]->assign_employee = rtrim($record[$i]->assign_employee, ", ");
+                $user[$i] = User::find(explode(",", $record[$i]->assign_employee));
+            }
+            //  dd(sizeof($user[0]));
+            $names = [];
+
+            for ($i = 0; $i < sizeof($user); $i++) {
+                $names[$i] = '';
+                for ($j = 0; $j < sizeof($user[$i]); $j++) {
+
+                    $names[$i] .=  '<span class="tool" data-tip="' .   $user[$i][$j]->name . ' | ' . $user[$i][$j]->position . '">' .
+                        '<i style="font-size: 25px;" class="far fa-user-circle"></i>' .
+                        '</span>';
+                }
+            }
+
+
+
+            if ($record) {
+                $data = '';
+                $k = 0;
+                foreach ($record as $item) {
+                    if ($item->status == 'complete') {
+                        $icon = '<i class="fas fa-check-circle pr-2 text-success" style="font-size:20px"></i>';
+                    } else {
+                        $icon =     '<a href="./mcp/' . $item->id . '">'
+                            . '<i class="far fa-check-circle pr-2 grow" style="font-size:20px"></i>' .
+                            '</a>';
+                    }
+                    $url = "'" . "./projects/" . $item->id . "'";
+                    $data .=  '<tr id="row"' . 'onclick="window.location=' . $url . '";>' .
+                        '<td id="name"' . 'style="padding: 17px 10px !important; width:50%;">' .
+                        $icon .
+                        $item->name .
+                        '</td>' .
+                        '<td>' . $names[$k] . '</td>' .
+                        '<td>' . Carbon::parse($item->due_date)->format('d-m-Y')  . '</td>' .
+                        '<td>' . $item->priority  . '</td>' .
+                        '<td>' . $item->status  . '</td>' .
+                        '</tr>';
+                    $k++;
+                }
+                // dd($data);
+                return  Response($data);
+            }
+            // if (!$record->isEmpty()) {
+            //     return $record;
+            // } else {
+            //     // $data = [[
+            //     //     "name" => "No record Found",
+            //     // ]];
+            //     // return $data;
+            // }
+        }
+    }
+    public function singleProject(Request $request, $id)
+    {
+        if ($request->isMethod("GET")) {
+            $project = Project::find($id);
+            return view("manager.single_project", ['project' => $project]);
+        }
+    }
+    public function searchProject(Request $request)
+    {
+        if ($request->isMethod("POST")) {
+            $record = Project::where('name', 'like', '%' . $request->que . '%')->get();
+            // dd($record);
+            $user = [];
+            for ($i = 0; $i < sizeof($record); $i++) {
+                $record[$i]->assign_employee = rtrim($record[$i]->assign_employee, ", ");
+                $user[$i] = User::find(explode(",", $record[$i]->assign_employee));
+            }
+            //  dd(sizeof($user[0]));
+            $names = [];
+
+            for ($i = 0; $i < sizeof($user); $i++) {
+                $names[$i] = '';
+                for ($j = 0; $j < sizeof($user[$i]); $j++) {
+
+                    $names[$i] .=  '<span class="tool" data-tip="' .   $user[$i][$j]->name . ' | ' . $user[$i][$j]->position . '">' .
+                        '<i style="font-size: 25px;" class="far fa-user-circle"></i>' .
+                        '</span>';
+                }
+            }
+
+
+
+            if ($record) {
+                $data = '';
+                $k = 0;
+                foreach ($record as $item) {
+                    if ($item->status == 'complete') {
+                        $icon = '<i class="fas fa-check-circle pr-2 text-success" style="font-size:20px"></i>';
+                    } else {
+                        $icon =     '<a href="./mcp/' . $item->id . '">'
+                            . '<i class="far fa-check-circle pr-2 grow" style="font-size:20px"></i>' .
+                            '</a>';
+                    }
+                    $url = "'" . "./projects/" . $item->id . "'";
+                    $data .=  '<tr id="row"' . 'onclick="window.location=' . $url . '";>' .
+                        '<td id="name"' . 'style="padding: 17px 10px !important; width:50%;">' .
+                        $icon .
+                        $item->name .
+                        '</td>' .
+                        '<td>' . $names[$k] . '</td>' .
+                        '<td>' . Carbon::parse($item->due_date)->format('d-m-Y')  . '</td>' .
+                        '<td>' . $item->priority  . '</td>' .
+                        '<td>' . $item->status  . '</td>' .
+                        '</tr>';
+                    $k++;
+                }
+                // dd($data);
+                return  Response($data);
+            }
+            // if (!$record->isEmpty()) {
+            //     return $record;
+            // } else {
+            //     // $data = [[
+            //     //     "name" => "No record Found",
+            //     // ]];
+            //     // return $data;
+            // }
         }
     }
 }

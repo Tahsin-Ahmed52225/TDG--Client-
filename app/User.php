@@ -42,7 +42,15 @@ class User extends Authenticatable
      */
     public function isManager()
     {
-        if ($this->position == 'Manager') {
+        if ($this->role == 'employee' && $this->position == 'Manager') {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public function isEmployee()
+    {
+        if ($this->role == 'employee') {
             return true;
         } else {
             return false;

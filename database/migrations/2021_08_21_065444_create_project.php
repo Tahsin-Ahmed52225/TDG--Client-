@@ -26,6 +26,7 @@ class CreateProject extends Migration
             $table->integer("manager_id");
             $table->integer("client_id")->nullable();
             $table->string('project_files', 255)->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
