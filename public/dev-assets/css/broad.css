@@ -20,7 +20,7 @@
   }
 .board-lists {
     display: grid;
-    grid-auto-columns: 275px;
+    grid-auto-columns: 310px;;
     grid-auto-flow: column;
     grid-gap: 10px;
     height: 400px;
@@ -28,7 +28,7 @@
   }
 
   .board-list {
-    background-color: rgb(235, 236, 240);
+    background-color: rgb(255, 255, 255);
     border-radius: 3px;
     display: grid;
     grid-auto-rows: max-content;

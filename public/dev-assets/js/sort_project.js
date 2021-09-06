@@ -1,3 +1,15 @@
+function listview(){
+   console.log("Hello List view");
+   $("#board_view").css("display","none");
+   $("#list_view").css("display","block");
+}
+function boardview(){
+    console.log("Hello board view");
+    $("#board_view").css("display","block");
+    $("#list_view").css("display","none");
+}
+
+
 function searchIT(){
     $que =  document.getElementById("searchBox").value;
     $.ajax({
