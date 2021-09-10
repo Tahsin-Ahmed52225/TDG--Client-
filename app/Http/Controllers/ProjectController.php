@@ -417,14 +417,16 @@ class ProjectController extends Controller
                 // dd($data);
                 return  Response($data);
             }
-            // if (!$record->isEmpty()) {
-            //     return $record;
-            // } else {
-            //     // $data = [[
-            //     //     "name" => "No record Found",
-            //     // ]];
-            //     // return $data;
-            // }
+        }
+    }
+    public function stageChange(Request $request)
+    {
+        if ($request->isMethod("GET")) {
+            $project = Project::find($request->p_id);
+            if ($project) {
+                $project->update(["status" => $request->stage]);
+                $project->save();
+            }
         }
     }
 }

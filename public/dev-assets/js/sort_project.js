@@ -1,10 +1,29 @@
+var page = localStorage.getItem('view');
+console.log(page);
+if(page){
+    if(page == 'board'){
+        $("#board_view").css("display","block");
+        $("#list_view").css("display","none");
+    }else{
+        $("#board_view").css("display","none");
+        $("#list_view").css("display","block");
+    }
+}else{
+    $("#board_view").css("display","none");
+    $("#list_view").css("display","block");
+}
+
 function listview(){
-   console.log("Hello List view");
+    localStorage['view'] = 'list';
+    var page = localStorage.getItem('view');
+    console.log(page);
    $("#board_view").css("display","none");
    $("#list_view").css("display","block");
 }
 function boardview(){
-    console.log("Hello board view");
+    localStorage['view'] = 'board';
+    var page = localStorage.getItem('view');
+    console.log(page);
     $("#board_view").css("display","block");
     $("#list_view").css("display","none");
 }
@@ -17,7 +36,7 @@ function searchIT(){
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         type : 'POST',
-        url : './search-project',
+        url : '../search-project',
         data:{
             que : $que,
         },
@@ -53,7 +72,7 @@ function monthChange(e){
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             type : 'POST',
-            url : './sort-by-month',
+            url : '../sort-by-month',
             data:{
                 month : month,
             },
@@ -81,7 +100,7 @@ function monthChange(e){
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             type : 'POST',
-            url : './sort-by-both',
+            url : '../sort-by-both',
             data:{
                 month : month,
                 year : year,
@@ -117,7 +136,7 @@ function yearChange(e){
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             type : 'POST',
-            url : './sort-by-year',
+            url : '../sort-by-year',
             data:{
                 year : year,
             },
@@ -145,7 +164,7 @@ function yearChange(e){
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             type : 'POST',
-            url : './sort-by-both',
+            url : '../sort-by-both',
             data:{
                 year : year,
                 month: month,

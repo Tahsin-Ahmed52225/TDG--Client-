@@ -33,6 +33,10 @@ Route::prefix('client')->name('admin.')->middleware(['auth', 'client'])->group(f
 //TDG login
 
 Route::match(['get', 'post'], '/tdg-login', 'AuthController@tdgLogin')->name('tdg_login');
+Route::post('/sort-by-year', 'ProjectController@sortByYear')->name("sort_by_year");
+Route::post('/sort-by-both', 'ProjectController@sortByBoth')->name("sort_by_both");
+Route::post('/search-project', 'ProjectController@searchProject')->name("search_project");
+Route::post('/sort-by-month', 'ProjectController@sortBymonth')->name("sort_by_month");
 
 
 
@@ -50,6 +54,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 //Employee Route
 Route::prefix('employee')->name('employee.')->middleware(['auth', 'employee'])->group(function () {
     Route::match(['get', 'post'], '/dashboard', 'EmployeeController@index')->name('dashboard');
+    Route::match(['get', 'post'], '/projects/{id}', 'ProjectController@singleProject')->name('single_project');
+    Route::get('/mcp/{id}', 'ProjectController@markComplete')->name('mark_Complete');
+    Route::get('/stage-change', 'ProjectController@stageChange')->name('stage_change');
 });
 //Manager Route
 Route::prefix('manager')->name('manager.')->middleware(['auth', 'manager'])->group(function () {
@@ -66,8 +73,4 @@ Route::prefix('manager')->name('manager.')->middleware(['auth', 'manager'])->gro
 
     ######Additional helping routes for projects
     Route::post('/all-member', 'ProjectController@allMember')->name("all_member");
-    Route::post('/sort-by-month', 'ProjectController@sortBymonth')->name("sort_by_month");
-    Route::post('/sort-by-year', 'ProjectController@sortByYear')->name("sort_by_year");
-    Route::post('/sort-by-both', 'ProjectController@sortByBoth')->name("sort_by_both");
-    Route::post('/search-project', 'ProjectController@searchProject')->name("search_project");
 });

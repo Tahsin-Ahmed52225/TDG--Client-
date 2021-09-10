@@ -37,15 +37,15 @@ function dropIt(ev) {
         } else {
             // Append to the list
             targetEl.appendChild(sourceIdEl);
+
             let data = targetEl.getAttribute('data-value');
             let p_id = sourceIdEl.getAttribute('data-id');
-
-            console.log(data);
-            console.log(p_id);
-
+            let card_id = "stage_board"+p_id;
+            let stage = document.getElementById(card_id);
+            stage.innerHTML = data;
             $.ajax({
                 type: 'GET',
-                url: '/tdg/projectStagechange',
+                url: './stage-change',
                 data: {
                     'p_id': p_id,
                     'stage': data,
@@ -53,16 +53,11 @@ function dropIt(ev) {
                 },
                 success: function (data) {
 
-                    // console.log("Data changed ")
-                    // console.log(data.msg);
-                    // console.log(p_id);
+                    location.reload();
 
                 },
-                error: function (errorThrown) {
-                    // console.log(data);
-                    // console.log(p_id);
-                    // console.log("Error:".errorThrown);
-
+                error: function (xhr) {
+                    console.log(xhr.responseText);
                 },
             })
 
