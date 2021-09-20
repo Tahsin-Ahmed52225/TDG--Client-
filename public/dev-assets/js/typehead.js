@@ -1,6 +1,7 @@
-$(document).ready(function(){
-   $(".bootstrap-tagsinput input:first").attr('id', 'assign_input');
+
+$(document).ready(function() {
    $("#assign_input").typeahead({
+
       source : function(que, result)
       {
         $.ajax({
@@ -14,18 +15,20 @@ $(document).ready(function(){
             },
          //   dataType: "json",
             success:function(data){
+             //   console.log(data);
                 let tempData = [];
-                data.map(item => tempData.push(`${item.id}. ${item.name}`))
+                data.map(item => tempData.push(`${item.id}. ${item.name}`));
+                console.log(tempData);
                 result(tempData);
             },
-            error: function (xhr, status, error) {
+            error: function (xhr) {
                 console.log(xhr.responseText);
             },
       });
 
    }
 
-
     });
-
 });
+
+

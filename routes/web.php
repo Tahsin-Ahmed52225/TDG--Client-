@@ -69,7 +69,11 @@ Route::prefix('manager')->name('manager.')->middleware(['auth', 'manager'])->gro
     Route::get('/mcp/{id}', 'ProjectController@markComplete')->name('mark_Complete');
     ##
     Route::match(['get', 'post'], '/view-projects', 'ProjectController@viewProject')->name('view_project');
-    Route::match(['get', 'post'], '/projects/{id}', 'ProjectController@singleProject')->name('single_project');
+    #
+    #
+    #Single Project Route - ( Overview )
+    Route::match(['get', 'post'], '/projects/{id}', 'SingleProjectController@singleProject')->name('single_project');
+    Route::post('/cnst', 'SingleProjectController@createNewtask')->name("create_new_task");
 
     ######Additional helping routes for projects
     Route::post('/all-member', 'ProjectController@allMember')->name("all_member");

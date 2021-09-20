@@ -58,7 +58,7 @@
                          <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label>Assignee <span class="text-danger">*</span></label>
-                                <input type="text" data-role="tagsinput" class="form-control" value="" name="tdg_assignee_member" >
+                                <input  type="text" data-role="tagsinput" class="form-control" value="" name="tdg_assignee_member" >
                             </div>
                             <div class="form-group col-md-6">
                                 <label>Due Date <span class="text-danger">*</span></label>
@@ -287,12 +287,12 @@
 
 @section("scripts")
 {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"></script> --}}
-
-
 <script src="{{ asset("dev-assets/js/tag.input.js") }}"></script>
+<script src="{{ asset("js/typeahead-main.js") }}" ></script>
 <script src="{{ asset("dev-assets/js/typehead.js") }}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.2/bootstrap3-typeahead.min.js" ></script>
-<script src="{{ asset("assets/js/pages/crud/file-upload/dropzonejs.js") }}"></script>
+
+
+
 {{-- <script src="{{ asset("dev-assets/js/add_project.js") }}"></script> --}}
 
 
