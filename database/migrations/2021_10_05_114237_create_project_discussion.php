@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateProjectDetails extends Migration
+class CreateProjectDiscussion extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateProjectDetails extends Migration
      */
     public function up()
     {
-        Schema::create('project_details', function (Blueprint $table) {
+        Schema::create('project_discussion', function (Blueprint $table) {
             $table->id();
-            $table->integer("project_id");
-            $table->text("subtask");
+            $table->integer("project_ID");
+            $table->longText('description');
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ class CreateProjectDetails extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('project_details');
+        Schema::dropIfExists('project_discussion');
     }
 }

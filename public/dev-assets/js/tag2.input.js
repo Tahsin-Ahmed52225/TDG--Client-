@@ -56,7 +56,7 @@
         this.inputSize = Math.max(1, this.placeholderText.length);
 
         this.$container = $('<div class="bootstrap-tagsinput"></div>');
-        this.$input = $('<input type="' + this.type + '" name="' + this.name + '" id ="assign_input" autocomplete="off"/>').appendTo(this.$container);
+        this.$input = $('<input type="' + this.type + '" name="' + this.name + '" id ="add_member2project" autocomplete="off"/>').appendTo(this.$container);
 
         this.$element.before(this.$container);
 

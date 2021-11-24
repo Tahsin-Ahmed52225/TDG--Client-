@@ -53,10 +53,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 });
 //Employee Route
 Route::prefix('employee')->name('employee.')->middleware(['auth', 'employee'])->group(function () {
+    #Dashboard Route
     Route::match(['get', 'post'], '/dashboard', 'EmployeeController@index')->name('dashboard');
-    Route::match(['get', 'post'], '/projects/{id}', 'ProjectController@singleProject')->name('single_project');
     Route::get('/mcp/{id}', 'ProjectController@markComplete')->name('mark_Complete');
     Route::get('/stage-change', 'ProjectController@stageChange')->name('stage_change');
+    #Single Project
+    Route::match(['get', 'post'], '/projects/{id}', 'ProjectController@singleProject')->name('single_project');
 });
 //Manager Route
 Route::prefix('manager')->name('manager.')->middleware(['auth', 'manager'])->group(function () {
@@ -74,6 +76,13 @@ Route::prefix('manager')->name('manager.')->middleware(['auth', 'manager'])->gro
     #Single Project Route - ( Overview )
     Route::match(['get', 'post'], '/projects/{id}', 'SingleProjectController@singleProject')->name('single_project');
     Route::post('/cnst', 'SingleProjectController@createNewtask')->name("create_new_task");
+    Route::get('/gntid', 'SingleProjectController@getNewTaskID')->name("get_new_task_id");
+    Route::get('/gots', 'SingleProjectController@getOldTaskStage')->name("get_old_task_stage");
+    #Single Project Route - ( Project Unit )
+    Route::post('/exiting-member', 'ProjectController@exitingMember')->name("exiting_member");
+    Route::post('single-project/{id}/update-project-member', 'SingleProjectController@updateProjectMember')->name("update_project_member");
+    #Single Project Route - ( Project Discussion )
+    Route::post('single-project/{id}/add-discussion', 'SingleProjectController@addDiscussion')->name("add_discussion");
 
     ######Additional helping routes for projects
     Route::post('/all-member', 'ProjectController@allMember')->name("all_member");

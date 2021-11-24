@@ -8,6 +8,6 @@ class ProjectDetails extends Model
 {
     protected $table = 'project_details';
     protected $fillable = [
-        'project_id', 'subtask', 'discussion', 'files'
+        'project_id', 'subtask'
     ];
 }

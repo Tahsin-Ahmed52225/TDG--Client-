@@ -13,6 +13,13 @@ use Illuminate\Support\Carbon;
 
 class ProjectController extends Controller
 {
+    /**
+     * Adding New Project
+     * @param Request
+     * @return GET::Add_project_page
+     * @return Post::Adding_project_data
+     *
+     */
     public function addProject(Request $request)
     {
         if ($request->isMethod("GET")) {
@@ -99,6 +106,13 @@ class ProjectController extends Controller
             return View::make('partials/flash_message');
         }
     }
+    /**
+     * Deleting Project
+     * @param Request @param project_Id
+     * @return GET::deleting_project_data
+     *
+     *
+     */
     public function deleteProject(Request $request, $id)
     {
         if ($request->isMethod("GET")) {
@@ -112,6 +126,13 @@ class ProjectController extends Controller
             }
         }
     }
+    /**
+     * Resorting  Project Data
+     * @param Request @param project_Id
+     * @return GET::resorte_project_data
+     *
+     *
+     */
     public function undoProject(Request $request, $id)
     {
         if ($request->isMethod("GET")) {
@@ -124,6 +145,13 @@ class ProjectController extends Controller
             }
         }
     }
+    /**
+     * Change Project Status to complete
+     * @param Request @param project_Id
+     * @return GET::change_project_status_to_complete
+     *
+     *
+     */
     public function markComplete(Request $request, $id)
     {
         if ($request->isMethod("GET")) {
@@ -135,6 +163,13 @@ class ProjectController extends Controller
             }
         }
     }
+    /**
+     * Getting All memebers name in typeahed
+     * @param Request
+     * @return POST(ajax)::getting_members_name_while_typing
+     *
+     *
+     */
     public function allMember(Request $request)
     {
         if ($request->isMethod("POST")) {
@@ -149,6 +184,13 @@ class ProjectController extends Controller
             }
         }
     }
+    /**
+     * View all project
+     * @param Request
+     * @return GET::all_project_details
+     *
+     *
+     */
     public function viewProject(Request $request)
     {
         if ($request->isMethod("GET")) {
@@ -158,19 +200,18 @@ class ProjectController extends Controller
                 $record[$i]->assign_employee = rtrim($record[$i]->assign_employee, ", ");
                 $user[$i] = User::find(explode(",", $record[$i]->assign_employee));
             }
-            //     dd($user);
             return view("manager.view_project", ['record' => $record, 'user' => $user]);
-            // $record = Project::take(3)->orderBy('due_date', 'desc')->get();
-            // // dd($record);
-            // //dd(json_decode($record[0]->project_files)[1]);
-            // //Converting the string into id array
-
-            // return view("manager.view_project", ['record' => $record, 'user' => $user]);
-            // // return view("manager.view_project");
         } else {
             return redirect('/');
         }
     }
+    /**
+     * Sorting project by month
+     * @param Request
+     * @return POST(ajax)::Returing_project_info_while_sorting_by_month
+     *
+     *
+     */
     public function sortBymonth(Request $request)
     {
         if ($request->isMethod("POST")) {
@@ -220,19 +261,17 @@ class ProjectController extends Controller
                         '</tr>';
                     $k++;
                 }
-                // dd($data);
                 return  Response($data);
             }
-            // if (!$record->isEmpty()) {
-            //     return $record;
-            // } else {
-            //     // $data = [[
-            //     //     "name" => "No record Found",
-            //     // ]];
-            //     // return $data;
-            // }
         }
     }
+    /**
+     * Sorting project by Year
+     * @param Request
+     * @return POST(ajax)::Returing_project_info_while_sorting_by_year
+     *
+     *
+     */
     public function sortByYear(Request $request)
     {
         if ($request->isMethod("POST")) {
@@ -282,19 +321,17 @@ class ProjectController extends Controller
                         '</tr>';
                     $k++;
                 }
-                // dd($data);
                 return  Response($data);
             }
-            // if (!$record->isEmpty()) {
-            //     return $record;
-            // } else {
-            //     // $data = [[
-            //     //     "name" => "No record Found",
-            //     // ]];
-            //     // return $data;
-            // }
         }
     }
+    /**
+     * Sorting project by month & year
+     * @param Request
+     * @return POST(ajax)::Returing_project_info_while_sorting_by_month_&_year
+     *
+     *
+     */
     public function sortByBoth(Request $request)
     {
         if ($request->isMethod("POST")) {
@@ -358,13 +395,13 @@ class ProjectController extends Controller
             // }
         }
     }
-    public function singleProject(Request $request, $id)
-    {
-        if ($request->isMethod("GET")) {
-            $project = Project::find($id);
-            return view("manager.single_project", ['project' => $project]);
-        }
-    }
+    /**
+     * Sorting project by Project_name
+     * @param Request
+     * @return POST(ajax)::Returing_project_info_while_sorting_by_project_name
+     *
+     *
+     */
     public function searchProject(Request $request)
     {
         if ($request->isMethod("POST")) {
@@ -419,14 +456,42 @@ class ProjectController extends Controller
             }
         }
     }
-    public function stageChange(Request $request)
+
+    // public function stageChange(Request $request)
+    // {
+    //     if ($request->isMethod("GET")) {
+    //         $project = Project::find($request->p_id);
+    //         if ($project) {
+    //             $project->update(["status" => $request->stage]);
+    //             $project->save();
+    //         }
+    //     }
+    // }
+    public function exitingMember(Request $request)
+    {
+        if ($request->isMethod("POST")) {
+            $project = Project::find($request->p_id);
+            $project->assign_employee = rtrim($project->assign_employee, ", ");
+            $user_ids = explode(",", $project->assign_employee);
+            $all_user = User::all();
+
+
+            for ($i = 0; $i < count($user_ids); $i++) {
+                $user = $all_user->where("id", "!=", $user_ids[$i])->where("role", "!=", "admin");
+                $all_user = $user;
+            }
+            $data = [];
+            foreach ($user as $item) {
+                array_push($data, $item);
+            }
+            return $data;
+        }
+    }
+    public function singleProject(Request $request, $id)
     {
         if ($request->isMethod("GET")) {
-            $project = Project::find($request->p_id);
-            if ($project) {
-                $project->update(["status" => $request->stage]);
-                $project->save();
-            }
+            $project = Project::find($id);
+            return view("manager.single_project", ['project' => $project]);
         }
     }
 }

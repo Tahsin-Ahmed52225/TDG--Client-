@@ -4,7 +4,7 @@
         <!--begin::Page Vendors Styles(used by this page)-->
 		<link href="{{ asset("assets/plugins/custom/datatables/datatables.bundle.css") }}" rel="stylesheet" type="text/css" />
         <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="{{ asset("dev-assets/style.css") }}">
+        <link rel="stylesheet" href="{{ asset("dev-assets/css/style.css") }}">
 		<!--end::Page Vendors Styles-->
 @endsection
 @section('content')
@@ -185,7 +185,7 @@
 		<!--begin::Page Scripts(used by this page)-->
 		<script src="{{ asset("assets/js/pages/crud/datatables/data-sources/html.js") }}"></script>
 		<!--end::Page Scripts-->
-        <script src="{{ asset("dev-assets/script.js") }}"></script>
+        <script src="{{ asset("dev-assets/js/script.js") }}"></script>
 
         <script>
                 $(document).on('click', '.toggle', function () {
