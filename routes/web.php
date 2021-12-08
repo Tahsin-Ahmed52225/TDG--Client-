@@ -21,8 +21,10 @@ Route::match(['get', 'post'], '/forget_password', 'AuthController@forget_passwor
 Route::get('/verify', 'AuthController@verify_User')->name('verify_User');
 
 //Client Route
-Route::prefix('client')->name('admin.')->middleware(['auth', 'client'])->group(function () {
+Route::prefix('client')->name('client.')->middleware(['auth', 'client'])->group(function () {
     Route::match(['get', 'post'], '/dashboard', 'ClientController@index')->name('dashboard');
+    Route::get('/view-projects/{stage}', 'ClientController@viewProjects')->name("view_projects");
+    Route::match(['get', 'post'], '/projects/{id}', 'SingleProjectController@ClientSingleProject')->name('single_project');
 });
 
 
@@ -50,6 +52,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/delete-member', 'AdminController@deleteMember')->name("deleteMember");
     Route::get('/update-member', 'AdminController@updateMember')->name("updateMember");
     Route::match(['get', 'post'], '/add-member', 'AdminController@addMember')->name('add_member');
+
+    #Admin Client routes
+    Route::match(['get', 'post'], '/view-clients', 'AdminController@viewClients')->name('view_clients');
+    Route::match(['get', 'post'], '/view-invitations', 'AdminController@viewInvitations')->name('view_invitations');
+    // Route::post('/invite-client', 'AdminController@inviteClient')->name('invite_client');
 });
 //Employee Route
 Route::prefix('employee')->name('employee.')->middleware(['auth', 'employee'])->group(function () {
@@ -81,9 +88,11 @@ Route::prefix('manager')->name('manager.')->middleware(['auth', 'manager'])->gro
     #Single Project Route - ( Project Unit )
     Route::post('/exiting-member', 'ProjectController@exitingMember')->name("exiting_member");
     Route::post('single-project/{id}/update-project-member', 'SingleProjectController@updateProjectMember')->name("update_project_member");
+    Route::post('/assign-project-member/{project_id}', 'SingleProjectController@assignProjectManager')->name("assignProjectManager");
     #Single Project Route - ( Project Discussion )
     Route::post('single-project/{id}/add-discussion', 'SingleProjectController@addDiscussion')->name("add_discussion");
 
     ######Additional helping routes for projects
     Route::post('/all-member', 'ProjectController@allMember')->name("all_member");
+    Route::post('/all-client', 'ProjectController@allClient')->name("all_client");
 });

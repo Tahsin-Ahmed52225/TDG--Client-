@@ -16,7 +16,8 @@ class CreateProjectDetails extends Migration
         Schema::create('project_details', function (Blueprint $table) {
             $table->id();
             $table->integer("project_id");
-            $table->text("subtask");
+            $table->integer("project_manager_id")->nullable();
+            $table->text("subtask")->nullable();
             $table->timestamps();
         });
     }

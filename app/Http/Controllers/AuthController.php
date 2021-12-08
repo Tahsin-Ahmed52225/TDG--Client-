@@ -38,7 +38,7 @@ class AuthController extends Controller
                         Auth::logout();
                         return redirect()->back()->with(session()->flash('alert-warning', 'Please verify your account'));
                     } else {
-                        if (Auth::user()->role == "Client") {
+                        if (Auth::user()->role == "client") {
                             if (Auth::user()->stage == 1) {
                                 return redirect('/client/dashboard');
                             } else {

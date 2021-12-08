@@ -28,15 +28,13 @@ class SingleProjectController extends Controller
             $project_details = ProjectDetails::where("project_id", $id)->first();
             if ($project_details) {
                 $tasks = json_decode($project_details->subtask);
+                $project_manager = $project_details->project_manager_id;
                 //  dd($project_details->subtask);
             } else {
                 $tasks = null;
             }
-            // $tasks = json_decode($project_details->subtask);
-            //   dd($tasks[0]->stage);
-            // $tasks = json_decode($project_details->subtask);
-            //   dd($tasks);
-            return view("manager.single_project", ['project' => $project, 'tasks' => $tasks, 'user' => $user]);
+
+            return view("manager.single_project", ['project' => $project, 'tasks' => $tasks, 'user' => $user, 'project_manager' => $project_manager]);
         }
     }
     /**
@@ -121,6 +119,12 @@ class SingleProjectController extends Controller
             }
         }
     }
+    /**
+     * Adding member to the project
+     * @param Request @param member_id
+     * @return GET::Single_project_page::Manager_single_project_page
+     *
+     */
     public function updateProjectMember(Request $request, $id)
     {
         if ($request->isMethod("POST")) {
@@ -143,10 +147,62 @@ class SingleProjectController extends Controller
             return redirect('/');
         }
     }
+    /**
+     * Discusstion function working on it
+     * @param Request
+     *
+     *
+     */
     public function addDiscussion(Request $request)
     {
         if ($request->isMethod("POST")) {
             dd($request->project_test);
+        }
+    }
+    /**
+     * Showing client single project
+     * @param Request @param project_id
+     * @return GET::Single_project_page::Client_side
+     *
+     */
+    public function clientSingleProject(Request $request, $id)
+    {
+        if ($request->isMethod("GET")) {
+            $project = Project::find($id);
+            $user = [];
+
+            $project->assign_employee = rtrim($project->assign_employee, ", ");
+            $user = User::find(explode(",", $project->assign_employee));
+
+            $project_details = ProjectDetails::where("project_id", $id)->first();
+
+            if ($project_details) {
+                $tasks = json_decode($project_details->subtask);
+                //  dd($project_details->subtask);
+            } else {
+                $tasks = null;
+            }
+            return view("client.single_project", ['project' => $project, 'tasks' => $tasks, 'user' => $user, 'project_manager' => $project_details->project_manager_id]);
+        }
+    }
+    /**
+     * Assign project manager to the project
+     * @param Request @param project_id
+     * @return GET::Single_project_page::Manager_single_project_page
+     *
+     */
+    public function assignProjectManager(Request $request, $project_id)
+    {
+        if ($request->isMethod("POST")) {
+            $project_details = ProjectDetails::where("project_id", $project_id)->first();
+            if ($project_details) {
+                $project_details->update(["project_manager_id" => $request->project_manager]);
+                return redirect()->back();
+            } else {
+                return redirect('/');
+            }
+        } else {
+            return redirect('/');
         }
     }
 }

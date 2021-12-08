@@ -430,9 +430,56 @@
                                         </div>
                                         <div class="tab-pane fade" id="profile-1" role="tabpanel" aria-labelledby="profile-tab-1">
                                                 {{-- this is role page starts --}}
+                                                @if(!$project_manager)
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <div class="card  card-custom  gutter-b">
+                                                                <div class="card-body ">
+                                                                    <i class="fas fa-info-circle text-primary"></i>
+                                                                     Project Manager Not Assigned. <a href="#" data-toggle="modal" data-target="#staticBackdrop">Assign Now?</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {{-- Project Manager assign modal starts  --}}
+
+                                                    <!-- Button trigger modal-->
+                                                    <div class="modal fade" id="staticBackdrop" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
+                                                        <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="exampleModalLabel">Assign Project Manager</h5>
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                        <i aria-hidden="true" class="ki ki-close"></i>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                                    <table class="table table-sm table-borderless text-center">
+                                                                                        <tbody class="text-center">
+                                                                                            @foreach ($user as $item )
+                                                                                            <tr>
+                                                                                                <td class="text-left align-middle">{{ $item->name }}</td>
+                                                                                                <td class="align-middle">{{ $item->position }}</td>
+                                                                                                <td>
+                                                                                                    <form method="POST" action="{{ route("manager.assignProjectManager", $project->id) }}">
+                                                                                                    @csrf
+                                                                                                        <button class="btn btn-sm btn-primary" type="submit" name="project_manager" value="{{ $item->id }}" >Assign</button>
+                                                                                                    </form>
+
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                            @endforeach
+                                                                                        </tbody>
+                                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {{-- Project Manager assign modal Ends  --}}
+                                                @endif
                                                 <div class="row">
                                                     <div class="col-md-4">
-                                                    <div class="card card-custom card-stretch gutter-b">
+                                                    <div class="card">
                                                         <!--begin::Body-->
                                                         <div class="card-body d-flex align-items-center justify-content-center">
                                                             <div class="row align-items-center justify-content-center pt-2" data-toggle="modal" data-target="#exampleModal">
@@ -471,25 +518,49 @@
                                                     </div>
                                                     </div>
                                                     @foreach ($user as $item )
-                                                    <div class="col-md-4">
-                                                    <div class="card card-custom card-stretch gutter-b">
-                                                        <!--begin::Body-->
-                                                        <div class="card-body d-flex align-items-center py-0 mt-8">
-                                                            <div class="d-flex flex-column flex-grow-1 py-2 py-lg-5">
-                                                                <a href="#" class="card-title font-weight-bolder text-dark-75 font-size-h5 mb-2 text-hover-primary">{{ $item->name }}</a>
-                                                                <span class="font-weight-bold text-muted font-size-lg">{{ $item->position }}</span>
+                                                        <div class="col-md-4">
+                                                        <div class="card card-custom card-stretch gutter-b">
+                                                            <!--begin::Body-->
+                                                            <div class="card-body d-flex align-items-center py-0 mt-8">
+                                                                <div class="d-flex flex-column flex-grow-1 py-2 py-lg-5">
+                                                                    <div class="row">
+                                                                        <div class="col-md-10">
+                                                                            <a href="#" class="card-title font-weight-bolder text-dark-75 font-size-h5 mb-2 text-hover-primary">{{ $item->name }}</a>
+                                                                        </div>
+                                                                        @if($item->id == $project_manager)
+                                                                            <div class="col-md-2">
+                                                                                <span style="cursor: pointer;" class="badge badge-primary" title="Project Manager">PM</span>
+                                                                            </div>
+                                                                        @endif
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col">
+                                                                            <span class="font-weight-bold text-muted font-size-lg">{{ $item->position }}</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <img src="assets/media/svg/avatars/029-boy-11.svg" alt="" class="align-self-end h-100px" />
                                                             </div>
-                                                            <img src="assets/media/svg/avatars/029-boy-11.svg" alt="" class="align-self-end h-100px" />
+                                                            <!--end::Body-->
                                                         </div>
-                                                        <!--end::Body-->
-                                                    </div>
-                                                    </div>
+                                                        </div>
                                                     @endforeach
                                                 </div>
                                                 {{-- this is role page ends --}}
                                         </div>
                                         <div class="tab-pane fade" id="demo-1" role="tabpanel" aria-labelledby="contact-tab-1">
-                                                This is a files
+                                            <div class="card card-custom gutter-b">
+                                                <div class="card-header">
+                                                    <div class="card-title">
+                                                        <h3 class="card-label">
+                                                            Project Files
+                                                        </h3>
+                                                    </div>
+                                                </div>
+                                                <div class="card-body">
+                                                 ...
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

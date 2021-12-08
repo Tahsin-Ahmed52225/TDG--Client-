@@ -7,9 +7,12 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
+
+use Illuminate\Support\Carbon;
+// Models
 use App\User;
 use App\Project;
-use Illuminate\Support\Carbon;
+use App\ProjectDetails;
 
 class ProjectController extends Controller
 {
@@ -36,27 +39,23 @@ class ProjectController extends Controller
             return view("manager.add_project", ['record' => $record, 'user' => $user]);
         } else if ($request->isMethod("POST")) {
 
-
-
             $data['project_name'] = $request->tdg_project_name;
             $ids = '';
-            //Modifining input value into id string
-            preg_match_all('!\d+!', $request->tdg_assignee_member, $id);
-            for ($i = 0; $i < sizeof($id[0]); $i++) {
-                $ids .= (string)$id[0][$i] . ',';
-            }
-
+            $ids = extracting_ids($request->tdg_assignee_member);
+            $client_id = extracting_client_id($request->tdg_client_ID);
             $data['assignee_member'] = $ids;
             $data['due_date'] = $request->tdg_project_date;
             $data['status'] = $request->tdg_project_status;
             $data['priority'] = $request->tdg_project_priority;
             $data['budget'] = $request->tdg_project_budget;
-            $data['client_ID'] = $request->tdg_client_ID;
+            $data['client_ID'] = $client_id;
             $data['project_description'] = $request->tdg_project_description;
             $data['files'] = $request->photos;
 
+            // dd($data);
+
             $validator = Validator::make($data, [
-                'project_name' => ['required', 'string', 'max:255', 'unique:project,name'],
+                'project_name' => ['required', 'string', 'max:255'],
                 'assignee_member' => ['required', 'string', 'max:255'],
                 'due_date' => ['required', 'date', 'max:255'],
                 'status' => ['required', 'string', 'max:255'],
@@ -95,6 +94,11 @@ class ProjectController extends Controller
                     'project_files' => json_encode($new_data["files"]),
                 ]);
                 if ($record) {
+                    $project_details = ProjectDetails::create([
+                        'project_id' => $record->id,
+                        'subtask' => json_encode([]),
+                        'project_manager_id' => null
+                    ]);
                     return redirect()->back()->with(session()->flash('alert-success', 'Project added successfully!'));
                 } else {
                     Session::flash('error', 'Something went wrong ! Try Again');
@@ -173,7 +177,28 @@ class ProjectController extends Controller
     public function allMember(Request $request)
     {
         if ($request->isMethod("POST")) {
-            $name = User::where('name', 'like', "%" . $request->que . "%")->get(["id", "name"]);
+            $name = User::where('role', '=', 'employee')->where('name', 'like', "%" . $request->que . "%")->get(["id", "name"]);
+            if (!$name->isEmpty()) {
+                return $name;
+            } else {
+                $data = [[
+                    "name" => "No record Found",
+                ]];
+                return $data;
+            }
+        }
+    }
+    /**
+     * Getting All memebers name in typeahed
+     * @param Request
+     * @return POST(ajax)::getting_members_name_while_typing
+     *
+     *
+     */
+    public function allClient(Request $request)
+    {
+        if ($request->isMethod("POST")) {
+            $name = User::where('role', '=', 'client')->where('verified', '=', 1)->where('name', 'like', "%" . $request->que . "%")->get(["id", "name"]);
             if (!$name->isEmpty()) {
                 return $name;
             } else {

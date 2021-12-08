@@ -59,6 +59,36 @@ $(document).ready(function () {
         }
 
     });
+    $("#client").typeahead({
+
+        source: function (que, result) {
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: 'POST',
+                url: './all-client',
+                data: {
+                    que: que,
+                    p_id: project_id,
+                },
+                //   dataType: "json",
+                success: function (data) {
+                    console.log(data);
+                    let tempData = [];
+                    data.map(item => tempData.push(`${item.id}. ${item.name}`));
+                    //console.log(tempData);
+                    result(tempData);
+                },
+                error: function (xhr) {
+                    console.log(xhr.responseText);
+                },
+            });
+
+        }
+
+    });
+
 });
 
 

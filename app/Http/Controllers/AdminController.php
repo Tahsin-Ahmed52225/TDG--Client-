@@ -164,4 +164,17 @@ class AdminController extends Controller
             }
         }
     }
+    /**
+     * Admin view all clients
+     * @param Request
+     * @return GET::all_clients
+     * @return POST::Invite_clients
+     */
+    public function viewClients(Request $request)
+    {
+        if ($request->isMethod("GET")) {
+            $users = User::where("role", "=", "client")->get();
+            return view('admin.view_client', ['users' => $users]);
+        }
+    }
 }
