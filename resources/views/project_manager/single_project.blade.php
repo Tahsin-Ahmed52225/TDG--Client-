@@ -1,4 +1,4 @@
-@extends('layouts.manager_layout')
+@extends('layouts.employee_layout')
 
 @section("links")
 <link rel="stylesheet" href="{{ asset("dev-assets/css/tag.input.css") }}">
@@ -174,13 +174,20 @@
                                                                                                         <a href="#" class="btn btn-hover-light-primary btn-sm btn-icon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                                                                             <i class="ki ki-bold-more-hor"></i>
                                                                                                         </a>
-                                                                                                        <div class="dropdown-menu p-0 m-0 dropdown-menu-md dropdown-menu-right">
+                                                                                                        <div class="dropdown-menu p-0 m-0 dropdown-menu-sm   dropdown-menu-left">
                                                                                                             <!--begin::Navigation-->
-                                                                                                            <ul class="navi navi-hover">
-                                                                                                                <li class="navi-item bg-light-danger rounded">
-                                                                                                                        <a  class="sub_task_delete navi-link" data-id={{ $items->id }}>
-                                                                                                                            <span class="navi-text">
-                                                                                                                                Delete Task
+                                                                                                            <ul class="navi bg-light-primary  navi-hover">
+                                                                                                                <li class="navi-item ">
+                                                                                                                    <a  class="sub_task_assign navi-link" data-id={{ $items->id }}>
+                                                                                                                        <span class="navi-text">
+                                                                                                                           Assign Member
+                                                                                                                        </span>
+                                                                                                                    </a>
+                                                                                                                 </li>
+                                                                                                                <li class="navi-item ">
+                                                                                                                        <a  class="subtask_delete navi-link" data-id={{ $items->id }}>
+                                                                                                                            <span class="navi-text text-danger">
+                                                                                                                               Delete Task
                                                                                                                             </span>
                                                                                                                         </a>
                                                                                                                 </li>
@@ -458,45 +465,6 @@
                                                     {{-- Project Manager assign modal Ends  --}}
                                                 @endif
                                                 <div class="row">
-                                                    <div class="col-md-4"  >
-                                                    <div class="card">
-                                                        <!--begin::Body-->
-                                                        <div class="card-body d-flex align-items-center justify-content-center">
-                                                            <div class="row align-items-center justify-content-center pt-2" data-toggle="modal" data-target="#exampleModal">
-                                                                <i class=" flaticon-add-circular-button mr-2" style="font-size:40px;"></i>
-                                                                <a href="#" class="card-title font-size-h5  text-hover-primary text-muted mb-0">Add Role</a>
-                                                            </div>
-
-                                                        </div>
-                                                        {{-- add role modal starts--}}
-                                                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                                <div class="modal-dialog modal-dialog-centered">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <h5 class="modal-title" id="exampleModalLabel">Add Member</h5>
-                                                                    </div>
-                                                                    <form method="POST" action={{ route("manager.update_project_member", $project->id) }}>
-                                                                    @csrf
-                                                                        <div class="modal-body">
-                                                                            <div class="form-row">
-                                                                                <div class="form-group col-md-12">
-                                                                                    <input placeholder="Add member by name" type="text" data-role="tagsinput"  value="" name="tdg_assignee_member" class="form-control" >
-                                                                                </div>
-                                                                            </div>
-
-                                                                        </div>
-                                                                        <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                                            <button type="submit" class="btn btn-primary">Save changes</button>
-                                                                        </div>
-                                                                    </form>
-                                                                </div>
-                                                                </div>
-                                                            </div>
-                                                        {{-- add role modal ends--}}
-                                                        <!--end::Body-->
-                                                    </div>
-                                                    </div>
                                                     @foreach ($user as $item )
                                                         <div class="col-md-4" >
                                                             <div class="card card-custom card-stretch gutter-b">
@@ -533,34 +501,8 @@
                                                                             <span class="font-weight-bold text-muted font-size-lg">{{ $item->position }}</span>
                                                                         </div>
                                                                         <div class="modal-body">
-                                                                            <div class="row">
-                                                                                <div class="col-md-6 text-center">
-                                                                                    <form method="POST" action="{{ route("manager.remove_member",$project->id) }}">
-                                                                                    @csrf
-                                                                                       <button type="submit" class="btn btn-lg btn-danger" name="member_id" value={{ $item->id }} @if($item->id == $project_manager) disabled @endif><i class="fas fa-minus-circle"></i> Remove Member</button>
-                                                                                    </form>
-                                                                                </div>
-                                                                                <div class="col-md-6 text-center">
-                                                                                    @if($item->id == $project_manager)
-                                                                                    <form method="POST" action="{{ route("manager.remove_p_manager",$project->id) }}">
-                                                                                    @csrf
-                                                                                        <button type="submit" name="member_id"  value={{ $item->id }} class="btn btn-lg btn-danger"><i class="fas fa-minus-circle"></i>  Remove P.Manager</button>
-                                                                                    </form>
 
-                                                                                    @elseif($project_manager == NULL)
-                                                                                        <form method="POST" action="{{ route("manager.assignProjectManager",$project->id) }}">
-                                                                                        @csrf
-                                                                                            <button type="submit" name="project_manager" value="{{ $item->id }}" class="btn btn-lg btn-primary"><i class="fas fa-user-plus"></i>Make P.Manager</button>
-                                                                                        </form>
-                                                                                    @else
-                                                                                        <form method="POST" action="{{ route("manager.assignProjectManager",$project->id) }}">
-                                                                                            @csrf
-                                                                                             <button type="submit" name="project_manager" value="{{ $item->id }}" class="btn btn-lg btn-info"><i class="fas fa-people-arrows"></i></i>Change P.Manager</button>
-                                                                                        </form>
-                                                                                    @endif
 
-                                                                                </div>
-                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -861,8 +803,6 @@
 @endsection
 
 @section("scripts")
-<script src="{{ asset("dev-assets/js/edit_project.js") }}"></script>
-<script src="{{ asset("dev-assets/js/create_subtask.js") }}"></script>
 <script>
     tinymce.init({
       selector: 'textarea',
@@ -876,12 +816,13 @@
       statusbar: false,
    });
   </script>
-
-  <script src="{{ asset("dev-assets/js/tag2.input.js") }}"></script>
+   <script src="{{ asset("dev-assets/js/project_manager/subtask_option.js") }}"></script>
+  <script src="{{ asset("dev-assets/js/project_manager/tag2.input.js") }}"></script>
   <script src="{{ asset("js/typeahead-main.js") }}" ></script>
-  <script src="{{ asset("dev-assets/js/typehead.js") }}"></script>
+  <script src="{{ asset("dev-assets/js/project_manager/typeahead.js") }}"></script>
+  <script src="{{ asset("dev-assets/js/project_manager/create_subtask.js") }}"></script>
   {{-- filepond JS --}}
   <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
-  <script src="{{ asset("dev-assets/js/single_project_file_upload.js") }}"></script>
+  <script src="{{ asset("dev-assets/js/project_manager/single_project_file_upload.js") }}"></script>
 
 @endsection

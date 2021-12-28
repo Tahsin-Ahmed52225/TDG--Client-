@@ -260,8 +260,10 @@
                                                 Attachments
                                                 </button>
                                                 <div class="dropdown-menu">
-                                                    @foreach(json_decode($record[$i]->project_files) as $item )
-                                                    <a class="dropdown-item" target="_blank" href="{{ asset('files/'.$item) }}">{{ $item }}</a>
+                                                    @foreach(json_decode($record[$i]->project_files) as $items )
+
+                                                    <a class="dropdown-item" target="_blank" href="{{ asset('files/'.$item->id.'/'.$items) }}">{{ $items }}</a>
+
                                                     @endforeach
 
                                                 </div>

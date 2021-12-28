@@ -20,12 +20,15 @@ class SingleProjectController extends Controller
     {
         if ($request->isMethod("GET")) {
             $project = Project::find($id);
+            //dd($project);
             $user = [];
 
             $project->assign_employee = rtrim($project->assign_employee, ", ");
             $user = User::find(explode(",", $project->assign_employee));
 
             $project_details = ProjectDetails::where("project_id", $id)->first();
+            $client_details = User::find($project->client_id);
+
             if ($project_details) {
                 $tasks = json_decode($project_details->subtask);
                 $project_manager = $project_details->project_manager_id;
@@ -34,7 +37,7 @@ class SingleProjectController extends Controller
                 $tasks = null;
             }
 
-            return view("manager.single_project", ['project' => $project, 'tasks' => $tasks, 'user' => $user, 'project_manager' => $project_manager]);
+            return view("manager.single_project", ['project' => $project, 'tasks' => $tasks, 'user' => $user, 'project_manager' => $project_manager, 'client_details' => $client_details]);
         }
     }
     /**
@@ -70,6 +73,18 @@ class SingleProjectController extends Controller
             }
         } else {
             return redirect('/');
+        }
+    }
+    /**
+     * Deleting Task on Single Project
+     * @param Request
+     * @return task_deleted
+     *
+     */
+    public function deleteProjectTask(Request $request, $project_id)
+    {
+        if ($request->isMethod("POST")) {
+            dd($project_id);
         }
     }
     /**
@@ -130,12 +145,8 @@ class SingleProjectController extends Controller
         if ($request->isMethod("POST")) {
             $project = Project::find($id);
             if ($project) {
-                $ids = '';
-                //Modifining input value into id string
                 preg_match_all('!\d+!', $request->tdg_assignee_member, $id);
-                for ($i = 0; $i < sizeof($id[0]); $i++) {
-                    $ids .= (string)$id[0][$i] . ',';
-                }
+                $ids = array_to_string($id[0]);
                 $new_member_list = $project->assign_employee . $ids;
                 $project->update(["assign_employee" => $new_member_list]);
 
@@ -203,6 +214,151 @@ class SingleProjectController extends Controller
             }
         } else {
             return redirect('/');
+        }
+    }
+    /**
+     * Remove member form the project
+     * @param Request @param project_id
+     * @return GET::Single_project_page::Manager_single_project_page
+     *
+     */
+    public function removeMember(Request $request, $project_id)
+    {
+        if ($request->isMethod("POST")) {
+            $project = Project::where("id", $project_id)->first();
+            if ($project) {
+                preg_match_all('!\d+!', $project->assign_employee, $id);
+                $ids = remove_number_from_array($id[0], $request->member_id);
+                $new_member_list = array_to_string($ids);
+                $project->update(["assign_employee" => $new_member_list]);
+                return redirect()->back();
+            } else {
+                return redirect('/');
+            }
+        } else {
+            return redirect('/');
+        }
+    }
+    /**
+     * Remove manager from a project
+     * @param Request @param project_id
+     * @return GET::Single_project_page::Manager_single_project_page
+     *
+     */
+    public function removeManager(Request $request, $project_id)
+    {
+        if ($request->isMethod("POST")) {
+            $project_details = ProjectDetails::where("project_id", $project_id)->first();
+            if ($project_details) {
+                $project_details->update(["project_manager_id" => null]);
+                return redirect()->back();
+            } else {
+                return redirect('/');
+            }
+        }
+    }
+    /** AJAX request
+     * updating project Name
+     * @param Request
+     * @return json::success_status
+     *
+     */
+    public function updateProjectName(Request $request)
+    {
+        if ($request->ajax()) {
+            $project = Project::find($request->project_id);
+            if ($project) {
+                $project->update(["name" => $request->project_name]);
+                return response()->json(["success" => true]);
+            } else {
+                return response()->json(["success" => false]);
+            }
+        }
+    }
+    /** AJAX request
+     * updating project description
+     * @param Request
+     * @return json::success_status
+     *
+     */
+    public function updateProjectDescription(Request $request)
+    {
+        if ($request->ajax()) {
+            $project = Project::find($request->project_id);
+            if ($project) {
+                $project->update(["description" => $request->project_description]);
+                return response()->json(["success" => true]);
+            } else {
+                return response()->json(["success" => false]);
+            }
+        }
+    }
+    /**
+     * updating project file
+     * @param Request
+     * @return json::success_status
+     *
+     */
+    public function addProjectFile(Request $request, $project_id)
+    {
+        if ($request->isMethod("POST")) {
+            $project = Project::find($project_id);
+            if ($project) {
+                if ($request->hasfile('fileUpload')) {
+                    $file = $request->file('fileUpload');
+                    $name = time() . '.' . $file->extension();
+                    $file->move(public_path() . '/files/' . $project_id, $name);
+                    $project_files = json_decode($project->project_files);
+                    array_push($project_files, $name);
+                    $project->update(["project_files" => json_encode($project_files)]);
+                    return "Success";
+                } else {
+                    return "Error";
+                }
+                //return response()->json(["success" => true]);
+            } else {
+                //return response()->json(["success" => false]);
+            }
+        }
+    }
+    /**
+     * deleting project file
+     * @param Request @param project_id
+     * @return single_project_page
+     *
+     */
+    public function deleteFile(Request $request, $project_id)
+    {
+        if ($request->isMethod("POST")) {
+            $project = Project::find($project_id);
+            $files = json_decode($project->project_files);
+            array_splice($files, $request->file_index, 1);
+            $project->update(["project_files" => json_encode($files)]);
+            return redirect()->back();
+            //dd($request->file_index);
+        }
+    }
+
+    /**
+     * deleting single subtask
+     * @param Request @param project_id
+     * @return single_project_page
+     *
+     */
+    public function deleteSubtask(Request $request)
+    {
+        if ($request->isMethod("GET")) {
+            $project_details = ProjectDetails::where("project_id", $request->project_id)->first();
+            if ($project_details) {
+                $old_tasks =  json_decode($project_details->subtask);
+                foreach ($old_tasks as $key => $task) {
+                    if ($task->id == $request->task_id) {
+                        unset($old_tasks[$key]);
+                    }
+                }
+                $project_details->update(["subtask" => json_encode($old_tasks)]);
+                return $old_tasks;
+            }
         }
     }
 }

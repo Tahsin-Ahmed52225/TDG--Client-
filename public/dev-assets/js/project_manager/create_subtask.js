@@ -8,6 +8,7 @@ function saveTask(alltask, id, i) {
         type: 'POST',
         url: '../cnst',
         data: {
+            project_id: id,
             task: alltask,
             ids: id,
             task_id: i,
@@ -84,64 +85,31 @@ function addTask(alltask) {
         <div class="text-dark-75 text-hover-primary font-weight-bold font-size-lg mb-1" id="tasklabel`+ alltask[0].id + `" style="margin-top:4px; height:20px;"></div>
     </div>
     <!--end::Text-->
-    <!--begin::Dropdown-->
-    <div class="dropdown dropdown-inline ml-2" data-toggle="tooltip" title="Quick actions" data-placement="left">
-        <a href="#" class="btn btn-hover-light-primary btn-sm btn-icon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="ki ki-bold-more-hor"></i>
-        </a>
-        <div class="dropdown-menu p-0 m-0 dropdown-menu-md dropdown-menu-right">
-            <!--begin::Navigation-->
-            <ul class="navi navi-hover">
-                <li class="navi-header font-weight-bold py-4">
-                    <span class="font-size-lg">Choose Label:</span>
-                    <i class="flaticon2-information icon-md text-muted" data-toggle="tooltip" data-placement="right" title="Click to learn more..."></i>
-                </li>
-                <li class="navi-separator mb-3 opacity-70"></li>
-                <li class="navi-item">
-                    <a href="#" class="navi-link">
-                        <span class="navi-text">
-                            <span class="label label-xl label-inline label-light-success">Customer</span>
+    <div class="dropdown dropdown-inline ml-2">
+    <a href="#" class="btn btn-hover-light-primary btn-sm btn-icon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="ki ki-bold-more-hor"></i>
+    </a>
+    <div class="dropdown-menu p-0 m-0 dropdown-menu-sm   dropdown-menu-left">
+        <!--begin::Navigation-->
+        <ul class="navi bg-light-primary  navi-hover">
+            <li class="navi-item ">
+                <a  class="sub_task_assign navi-link" data-id={{ $items->id }}>
+                    <span class="navi-text">
+                       Assign Member
+                    </span>
+                </a>
+             </li>
+            <li class="navi-item ">
+                    <a  class="subtask_delete navi-link" data-id={{ $items->id }}>
+                        <span class="navi-text text-danger">
+                           Delete Task
                         </span>
                     </a>
-                </li>
-                <li class="navi-item">
-                    <a href="#" class="navi-link">
-                        <span class="navi-text">
-                            <span class="label label-xl label-inline label-light-danger">Partner</span>
-                        </span>
-                    </a>
-                </li>
-                <li class="navi-item">
-                    <a href="#" class="navi-link">
-                        <span class="navi-text">
-                            <span class="label label-xl label-inline label-light-warning">Suplier</span>
-                        </span>
-                    </a>
-                </li>
-                <li class="navi-item">
-                    <a href="#" class="navi-link">
-                        <span class="navi-text">
-                            <span class="label label-xl label-inline label-light-primary">Member</span>
-                        </span>
-                    </a>
-                </li>
-                <li class="navi-item">
-                    <a href="#" class="navi-link">
-                        <span class="navi-text">
-                            <span class="label label-xl label-inline label-light-dark">Staff</span>
-                        </span>
-                    </a>
-                </li>
-                <li class="navi-separator mt-3 opacity-70"></li>
-                <li class="navi-footer py-4">
-                    <a class="btn btn-clean font-weight-bold btn-sm" href="#">
-                    <i class="ki ki-plus icon-sm"></i>Add new</a>
-                </li>
-            </ul>
-            <!--end::Navigation-->
-        </div>
+            </li>
+        </ul>
+        <!--end::Navigation-->
     </div>
-    <!--end::Dropdown-->
+</div>
 </div>`
     $('#task_board').append(task);
 
@@ -158,7 +126,7 @@ $(document).ready(function () {
                 project_id: id,
             },
             success: function (data) {
-                console.log("new task id" + data);
+                console.log("I am here" + data);
                 var new_task = { id: data, task: '', stage: false };
                 alltask[0] = new_task;
                 addTask(alltask);

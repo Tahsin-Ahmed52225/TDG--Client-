@@ -50,7 +50,7 @@ class User extends Authenticatable
     }
     public function isEmployee()
     {
-        if ($this->role == 'employee') {
+        if ($this->role == 'employee' && $this->position != 'Manager') {
             return true;
         } else {
             return false;

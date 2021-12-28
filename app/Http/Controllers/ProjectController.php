@@ -74,7 +74,6 @@ class ProjectController extends Controller
                 if ($request->hasfile('photos')) {
                     foreach ($request->file('photos') as $file) {
                         $name = time() . '.' . $file->extension();
-                        $file->move(public_path() . '/files/', $name);
                         $new_data['files'][] = $name;
                     }
                 }
@@ -99,6 +98,11 @@ class ProjectController extends Controller
                         'subtask' => json_encode([]),
                         'project_manager_id' => null
                     ]);
+                    $counter = 0;
+                    foreach ($request->file('photos') as $file) {
+                        $file->move(public_path() . '/files/' . $record->id, $new_data['files'][$counter]);
+                        $counter++;
+                    }
                     return redirect()->back()->with(session()->flash('alert-success', 'Project added successfully!'));
                 } else {
                     Session::flash('error', 'Something went wrong ! Try Again');
@@ -502,7 +506,7 @@ class ProjectController extends Controller
 
 
             for ($i = 0; $i < count($user_ids); $i++) {
-                $user = $all_user->where("id", "!=", $user_ids[$i])->where("role", "!=", "admin");
+                $user = $all_user->where("id", "!=", $user_ids[$i])->where("role", "==", "employee");
                 $all_user = $user;
             }
             $data = [];
@@ -510,13 +514,6 @@ class ProjectController extends Controller
                 array_push($data, $item);
             }
             return $data;
-        }
-    }
-    public function singleProject(Request $request, $id)
-    {
-        if ($request->isMethod("GET")) {
-            $project = Project::find($id);
-            return view("manager.single_project", ['project' => $project]);
         }
     }
 }

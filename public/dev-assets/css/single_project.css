@@ -78,3 +78,26 @@
 .chat_closed_box {
     height: 100px;
 }
+
+#tdg_project_name {
+    height: 28px;
+    padding: 2px;
+    width: 80vh;
+}
+
+.filepond--credits {
+    display: none !important;
+}
+
+.grow {
+    transition: all .2s ease-in-out;
+}
+
+.grow:hover {
+    transform: scale(1.1);
+    color: red;
+}
+
+.subtask_delete {
+    cursor: pointer;
+}
