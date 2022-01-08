@@ -61,7 +61,7 @@
                                                                 </span>
 
                                                                 <div id="tdg_project_name" class="card-label h3" data-ivalue="{{ $project->id }}">
-                                                                         {{  $project->name }}
+                                                                         {{  $project->project_name }}
                                                                 </div>
                                                             </div>
                                                             <div class="card-toolbar">
@@ -136,7 +136,7 @@
                                                                 <div class="card card-custom card-stretch gutter-b">
                                                                     <!--begin::Header-->
                                                                     <div class="card-header border-0">
-                                                                        <h3 class="card-title font-weight-bolder text-dark">Tasks</h3>
+                                                                        <h3 class="card-title font-weight-bolder text-dark" >Tasks</h3>
                                                                         <div class="card-toolbar" id="create_task">
                                                                                 <a href="#" class="btn btn-light btn-sm font-size-sm font-weight-bolder  text-dark-75"  > <i class="fas fa-plus"></i>  Create</a>
                                                                         </div>
@@ -144,29 +144,25 @@
                                                                     <!--end::Header-->
                                                                     <!--begin::Body-->
                                                                     <div class="card-body pt-2" id="task_board">
-                                                                    @if($tasks)
-                                                                        @foreach ( $tasks as $items )
+                                                                    {{-- @if($tasks)
+                                                                        @foreach ( $tasks as $items ) --}}
                                                                             <div class="d-flex align-items-center mt-3">
                                                                                                         <!--begin::Bullet-->
                                                                                                     <span class="bullet bullet-bar bg-success align-self-stretch"></span>
                                                                                                     <!--end::Bullet-->
                                                                                                     <!--begin::Checkbox-->
                                                                                                     <label class="checkbox checkbox-lg checkbox-light-success checkbox-inline flex-shrink-0 m-0 mx-4">
-                                                                                                        <input type="checkbox" name="select" value="1" onchange="stageChange(event,{{ $items->id}})"
-                                                                                                        @if( $items->stage == "true")
+                                                                                                        <input type="checkbox" name="select" value="1"
+                                                                                                        {{-- @if( $items->complete == "true")
                                                                                                             checked
-                                                                                                        @endif
+                                                                                                        @endif --}}
                                                                                                         >
                                                                                                         <span></span>
                                                                                                     </label>
                                                                                                     <!--end::Checkbox-->
                                                                                                     <!--begin::Text-->
-                                                                                                    <div class="d-flex flex-column flex-grow-1" ondblclick="updateTask(event,{{ $items->id }})">
-                                                                                                        <div class="text-dark-75 text-hover-primary font-weight-bold font-size-lg mb-1" id="tasklabel{{ $items->id }}" style="margin-top:4px; height:20px;
-                                                                                                        @if( $items->stage == "true")
-                                                                                                            text-decoration : line-through;
-                                                                                                        @endif
-                                                                                                            ">{{ $items->task }}</div>
+                                                                                                    <div class="d-flex flex-column flex-grow-1" >
+                                                                                                        <div class="text-dark-75 text-hover-primary font-weight-bold font-size-lg mb-1 sub_task_title"  style="margin-top:4px; height:20px;"> Demo Task</div>
                                                                                                     </div>
                                                                                                     <!--end::Text-->
                                                                                                     <!--begin::Dropdown-->
@@ -178,7 +174,7 @@
                                                                                                             <!--begin::Navigation-->
                                                                                                             <ul class="navi navi-hover">
                                                                                                                 <li class="navi-item bg-light-danger rounded">
-                                                                                                                        <a  class="sub_task_delete navi-link" data-id={{ $items->id }}>
+                                                                                                                        <a  class="sub_task_delete navi-link"
                                                                                                                             <span class="navi-text">
                                                                                                                                 Delete Task
                                                                                                                             </span>
@@ -190,8 +186,8 @@
                                                                                                     </div>
 
                                                                             </div>
-                                                                        @endforeach
-                                                                    @endif
+                                                                        {{-- @endforeach
+                                                                    @endif --}}
                                                                     </div>
                                                                     <!--end::Body-->
                                                                 </div>
@@ -436,7 +432,7 @@
                                                                 <div class="modal-body">
                                                                                     <table class="table table-sm table-borderless text-center">
                                                                                         <tbody class="text-center">
-                                                                                            @foreach ($user as $item )
+                                                                                            @foreach ($employee as $item )
                                                                                             <tr>
                                                                                                 <td class="text-left align-middle">{{ $item->name }}</td>
                                                                                                 <td class="align-middle">{{ $item->position }}</td>
@@ -497,7 +493,7 @@
                                                         <!--end::Body-->
                                                     </div>
                                                     </div>
-                                                    @foreach ($user as $item )
+                                                    @foreach ($employee as $item )
                                                         <div class="col-md-4" >
                                                             <div class="card card-custom card-stretch gutter-b">
                                                                 <!--begin::Body-->
@@ -607,7 +603,7 @@
                                                             <input type="file" name="fileUpload"  />
                                                 </div>
                                                 <div class="card-footer">
-                                                    <table class="table table-striped">
+                                                    {{-- <table class="table table-striped">
                                                         <tbody>
                                                             @php
                                                                $counter = 0;
@@ -618,7 +614,7 @@
                                                                 <td > Mahbubur Rahaman Uploaded <a class="ml-2" target="_blank" href="{{ asset('files/'.$project->id.'/'.$item) }}">{{ $item }}</a>  </td>
                                                                 <td class="text-right"><i class="fas fa-trash-alt grow" data-toggle="modal" data-target="#staticBackdrop"></i></td>
                                                             </tr>
-                                                            {{-- Deleteing file modal Starts --}}
+
                                                             <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel{{ $counter }}" aria-hidden="true">
                                                                 <div class="modal-dialog modal-dialog-centered">
                                                                   <div class="modal-content">
@@ -644,10 +640,10 @@
                                                               @php
                                                                 $counter++;
                                                               @endphp
-                                                            {{-- Deleteing file modal ends --}}
+
                                                             @endforeach
                                                         </tbody>
-                                                    </table>
+                                                    </table> --}}
                                                 </div>
                                             </div>
                                         </div>
@@ -861,8 +857,8 @@
 @endsection
 
 @section("scripts")
-<script src="{{ asset("dev-assets/js/edit_project.js") }}"></script>
-<script src="{{ asset("dev-assets/js/create_subtask.js") }}"></script>
+<script src="{{ asset("dev-assets/js/manager/update_project_info.js") }}"></script>
+<script src="{{ asset("dev-assets/js/manager/subtask.js") }}"></script>
 <script>
     tinymce.init({
       selector: 'textarea',

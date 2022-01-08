@@ -49,7 +49,7 @@
                                         <span class="card-icon">
                                             <i class="flaticon2-chat-1 text-primary"></i>
                                         </span>
-                                        <a href="{{ route("client.single_project", $items->id) }}"><h3 class="card-label">{{ $items->name }}</h3> </a>
+                                        <a href="{{ route("client.single_project", $items->id) }}"><h3 class="card-label">{{ $items->project_name }}</h3> </a>
                                     </div>
                                     <div class="card-toolbar">
                                         <a href="#" class="btn btn-sm btn-icon btn-light-success mr-2">

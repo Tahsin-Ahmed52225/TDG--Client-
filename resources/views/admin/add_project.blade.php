@@ -1,4 +1,4 @@
-@extends('layouts.manager_layout')
+@extends('layouts.admin_layout')
 
 @section("links")
 <link rel="stylesheet" href="{{ asset("dev-assets/css/tag.input.css") }}">
@@ -45,7 +45,7 @@
                      </h3>
                     </div>
                     <!--begin::Form-->
-                    <form method="POST" action={{ route("manager.add_project") }} enctype="multipart/form-data"  autocomplete="off">
+                    <form method="POST" action={{ route("admin.add_project") }} enctype="multipart/form-data"  autocomplete="off">
                     @csrf
                      <div class="card-body">
                          <div class="form-row">
@@ -146,7 +146,7 @@
                          </div>
 
                         <div class="card-title">
-                            <a href="{{ route("manager.view_project") }}">
+                            <a href="{{ route("admin.view_project") }}">
                                   <button type="button" class="btn btn-primary btn-sm">View All</button>
                             </a>
                         </div>
@@ -156,7 +156,7 @@
                     @endphp
                     @foreach ( $record as $item)
 
-                    <a href="{{ route("manager.single_project", $item->id) }}">
+                    <a href="{{ route("admin.single_project", $item->id) }}">
                         <div class="card-body">
                             <div class="card card-custom text-dark">
                                 <div class="priority
@@ -256,10 +256,10 @@
 
 @section("scripts")
 {{-- custom scripts 01--}}
-<script src="{{ asset("dev-assets/js/manager/tag.input.js") }}"></script>
+<script src="{{ asset("dev-assets/js/admin/tag.input.js") }}"></script>
 {{-- library scripts --}}
 <script src="{{ asset("js/typeahead-main.js") }}" ></script>
 {{-- custom scripts 02--}}
-<script src="{{ asset("dev-assets/js/manager/typehead.js") }}"></script>
-<script src="{{ asset("dev-assets/js/manager/add_project.js") }}"></script>
+<script src="{{ asset("dev-assets/js/admin/typehead.js") }}"></script>
+<script src="{{ asset("dev-assets/js/admin/add_project.js") }}"></script>
 @endsection

@@ -7,9 +7,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/logout', 'AuthController@logout')->name("logout");
-
-
 
 
 ########################    Client routes   ###########################
@@ -35,10 +32,23 @@ Route::prefix('client')->name('client.')->middleware(['auth', 'client'])->group(
 //TDG login
 
 Route::match(['get', 'post'], '/tdg-login', 'AuthController@tdgLogin')->name('tdg_login');
-Route::post('/sort-by-year', 'ProjectController@sortByYear')->name("sort_by_year");
-Route::post('/sort-by-both', 'ProjectController@sortByBoth')->name("sort_by_both");
-Route::post('/search-project', 'ProjectController@searchProject')->name("search_project");
-Route::post('/sort-by-month', 'ProjectController@sortBymonth')->name("sort_by_month");
+
+//Routes for Authenticated Users
+Route::middleware('auth')->group(function () {
+    #######Sorting Project Routes
+    Route::post('/sort-by-year', 'ProjectController@sortByYear')->name("sort_by_year");
+    Route::post('/sort-by-both', 'ProjectController@sortByBoth')->name("sort_by_both");
+    Route::post('/search-project', 'ProjectController@searchProject')->name("search_project");
+    Route::post('/sort-by-month', 'ProjectController@sortBymonth')->name("sort_by_month");
+    ######Additional helping routes for projects
+    Route::post('/all-member', 'ProjectController@allMember')->name("all_member");
+    Route::post('/all-client', 'ProjectController@allClient')->name("all_client");
+    Route::post('/exiting-member', 'ProjectController@exitingMember')->name("exiting_member");
+
+    ######Logout Route
+    Route::get('/logout', 'AuthController@logout')->name("logout");
+});
+
 
 
 
@@ -57,7 +67,17 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::match(['get', 'post'], '/view-clients', 'AdminController@viewClients')->name('view_clients');
     Route::match(['get', 'post'], '/view-invitations', 'AdminController@viewInvitations')->name('view_invitations');
     // Route::post('/invite-client', 'AdminController@inviteClient')->name('invite_client');
+    #Admin Project routes
+    Route::match(['get', 'post'], '/view-projects', 'ProjectController@view')->name('view_project');
+    Route::match(['get', 'post'], '/add-project', 'ProjectController@create')->name('add_project');
+    #Single Project Routes
+    Route::match(['get', 'post'], '/projects/{id}', 'SingleProjectController@singleProject')->name('single_project');
 });
+
+
+
+
+
 //Employee Route
 Route::prefix('employee')->name('employee.')->middleware(['auth', 'employee'])->group(function () {
     #Dashboard Route
@@ -68,26 +88,36 @@ Route::prefix('employee')->name('employee.')->middleware(['auth', 'employee'])->
     #Single Project
     Route::match(['get', 'post'], '/projects/{id}', 'EmployeeSingleProjectController@singleProject')->name('single_project');
 });
+
+
+
+
+
+
+
+
+
 //Manager Route
 Route::prefix('manager')->name('manager.')->middleware(['auth', 'manager'])->group(function () {
     Route::match(['get', 'post'], '/dashboard', 'ManagerController@index')->name('dashboard');
 
     #Projects Route
-    Route::match(['get', 'post'], '/add-project', 'ProjectController@addProject')->name('add_project');
-    Route::get('/delete-project/{id}', 'ProjectController@deleteProject')->name("delete_project");
-    Route::get('/undo-project/{id}', 'ProjectController@undoProject')->name('undo_Project');
-    Route::get('/mcp/{id}', 'ProjectController@markComplete')->name('mark_Complete');
+    Route::match(['get', 'post'], '/add-project', 'ProjectController@create')->name('add_project');
+    Route::get('/delete-project/{id}', 'ProjectController@delete')->name("delete_project");
+    Route::get('/undo-delete/{id}', 'ProjectController@undo_delete')->name('undo_Project');
+    Route::get('/mark-complete-project/{id}', 'ProjectController@markComplete')->name('mark_Complete');
     ##
-    Route::match(['get', 'post'], '/view-projects', 'ProjectController@viewProject')->name('view_project');
+    Route::match(['get', 'post'], '/view-projects', 'ProjectController@view')->name('view_project');
     #
     #
     #Single Project Route - ( Overview )
-    Route::match(['get', 'post'], '/projects/{id}', 'SingleProjectController@singleProject')->name('single_project');
-    Route::post('/update-project-name', 'SingleProjectController@updateProjectName')->name("update_project_name");
-    Route::post('/update-project-description', 'SingleProjectController@updateProjectDescription')->name("update_project_description");
+    Route::match(['get', 'post'], '/projects/{id}', 'ManagerSingleProjectController@view')->name('single_project');
+    Route::post('/update-project-name', 'ManagerSingleProjectController@updateProjectName')->name("update_project_name");
+    Route::post('/update-project-description', 'ManagerSingleProjectController@updateProjectDescription')->name("update_project_description");
     ##Project Task Routes
+    Route::get('/get_new_task_id', 'ProjectSubtaskController@getNewTaskID')->name("get_new_task_id");
     Route::post('/cnst', 'SingleProjectController@createNewtask')->name("create_new_task");
-    Route::get('/gntid', 'SingleProjectController@getNewTaskID')->name("get_new_task_id");
+
     Route::get('/gots', 'SingleProjectController@getOldTaskStage')->name("get_old_task_stage");
     Route::post('/delete-project-task/{project_id}', 'SingleProjectController@deleteProjectTask')->name("delete_project_task");
 
@@ -110,6 +140,11 @@ Route::prefix('manager')->name('manager.')->middleware(['auth', 'manager'])->gro
     Route::post('/all-member', 'ProjectController@allMember')->name("all_member");
     Route::post('/all-client', 'ProjectController@allClient')->name("all_client");
 });
+
+
+
+
+
 //Project Manager Route
 Route::prefix('project_manager')->name('project_manager.')->middleware(['auth', 'employee', 'project_manager'])->group(function () {
     #Single Project

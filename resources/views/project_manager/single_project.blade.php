@@ -184,8 +184,8 @@
                                                                                                                         </span>
                                                                                                                     </a>
                                                                                                                  </li>
-                                                                                                                <li class="navi-item ">
-                                                                                                                        <a  class="subtask_delete navi-link" data-id={{ $items->id }}>
+                                                                                                                <li class="navi-item subtask_delete" data-id={{ $items->id }}>
+                                                                                                                        <a  class=" navi-link" >
                                                                                                                             <span class="navi-text text-danger">
                                                                                                                                Delete Task
                                                                                                                             </span>
@@ -816,11 +816,10 @@
       statusbar: false,
    });
   </script>
-   <script src="{{ asset("dev-assets/js/project_manager/subtask_option.js") }}"></script>
   <script src="{{ asset("dev-assets/js/project_manager/tag2.input.js") }}"></script>
   <script src="{{ asset("js/typeahead-main.js") }}" ></script>
   <script src="{{ asset("dev-assets/js/project_manager/typeahead.js") }}"></script>
-  <script src="{{ asset("dev-assets/js/project_manager/create_subtask.js") }}"></script>
+  <script src="{{ asset("dev-assets/js/project_manager/subtask_options.js") }}"></script>
   {{-- filepond JS --}}
   <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
   <script src="{{ asset("dev-assets/js/project_manager/single_project_file_upload.js") }}"></script>

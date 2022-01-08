@@ -1,5 +1,21 @@
 var alltask = [];
 var id = $("#tdg_project_name").data("ivalue");
+function delete_task(i) {
+    $.ajax({
+        type: 'GET',
+        url: '../delete-subtask',
+        data: {
+            project_id: id,
+            task_id: i,
+        },
+        success: function (data) {
+            console.log("I am here" + data);
+        },
+        error: function (xhr) {
+            console.log(xhr.responseText);
+        },
+    });
+}
 function saveTask(alltask, id, i) {
     $.ajax({
         headers: {
@@ -25,8 +41,7 @@ function saveTask(alltask, id, i) {
 }
 
 function updateTask(event, i) {
-
-    // console.log(event.target);
+    //console.log(event.target);
     $(event.target).attr('contenteditable', 'true');
     $(event.target).keyup(function () {
         if (window.event.keyCode === 13) {
@@ -93,14 +108,14 @@ function addTask(alltask) {
         <!--begin::Navigation-->
         <ul class="navi bg-light-primary  navi-hover">
             <li class="navi-item ">
-                <a  class="sub_task_assign navi-link" data-id={{ $items->id }}>
+                <a  class="sub_task_assign navi-link" data-id= `+ alltask[0].id + `>
                     <span class="navi-text">
                        Assign Member
                     </span>
                 </a>
              </li>
-            <li class="navi-item ">
-                    <a  class="subtask_delete navi-link" data-id={{ $items->id }}>
+            <li class="navi-item subtask_delete"  onclick=delete_task(`+ alltask[0].id + `)>
+                    <a  class="navi-link">
                         <span class="navi-text text-danger">
                            Delete Task
                         </span>
@@ -139,12 +154,9 @@ $(document).ready(function () {
         // i++;
     });
     // Deleting subtask from task
-    // $("li").delegate(".sub_task_delete", "click", function () {
-
-    //     var task_id = $(.sub_task_delete).attr('id');
-    //     alert("Project ID:" + id + "Task ID:" + task_id);
-
-    // });
+    $("#task_board > div > .dropdown > .dropdown-menu > .navi").delegate(".subtask_delete", "click", function (e) {
+        delete_task($(this).data("id"));
+    });
 
 });
 

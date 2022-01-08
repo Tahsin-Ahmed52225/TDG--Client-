@@ -1,4 +1,4 @@
-@extends('layouts.manager_layout')
+@extends('layouts.admin_layout')
 
 @section("links")
         <!--begin::Page Vendors Styles(used by this page)-->
@@ -26,7 +26,7 @@
                        <div class="col-md-4">
                            <div class="row ">
                                 <div class="col-md-4 pt-1 pr-2">
-                                    <a href="{{ route("manager.add_project") }}">
+                                    <a href="{{ route("admin.add_project") }}">
                                     <button type="button" class="btn btn-light btn-sm"> <i class="fas fa-plus"></i> <span class="pt-2">Add New</span> </button>
                                     </a>
                                 </div>

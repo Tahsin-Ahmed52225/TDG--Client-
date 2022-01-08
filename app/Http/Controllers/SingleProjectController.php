@@ -87,24 +87,7 @@ class SingleProjectController extends Controller
             dd($project_id);
         }
     }
-    /**
-     * Geting the   new Task ID
-     * @param Request
-     * @return GET::Returning_latest_task_id
-     *
-     */
-    public function getNewTaskID(Request $request)
-    {
-        if ($request->isMethod("GET")) {
-            $project_details = ProjectDetails::where("project_id", $request->project_id)->first();
-            if ($project_details) {
-                $tasks = json_decode($project_details->subtask);
-                return (sizeof($tasks) + 1);
-            } else {
-                return 1;
-            }
-        }
-    }
+
     /**
      * Updating the Task stage
      * @param Request
@@ -257,42 +240,7 @@ class SingleProjectController extends Controller
             }
         }
     }
-    /** AJAX request
-     * updating project Name
-     * @param Request
-     * @return json::success_status
-     *
-     */
-    public function updateProjectName(Request $request)
-    {
-        if ($request->ajax()) {
-            $project = Project::find($request->project_id);
-            if ($project) {
-                $project->update(["name" => $request->project_name]);
-                return response()->json(["success" => true]);
-            } else {
-                return response()->json(["success" => false]);
-            }
-        }
-    }
-    /** AJAX request
-     * updating project description
-     * @param Request
-     * @return json::success_status
-     *
-     */
-    public function updateProjectDescription(Request $request)
-    {
-        if ($request->ajax()) {
-            $project = Project::find($request->project_id);
-            if ($project) {
-                $project->update(["description" => $request->project_description]);
-                return response()->json(["success" => true]);
-            } else {
-                return response()->json(["success" => false]);
-            }
-        }
-    }
+
     /**
      * updating project file
      * @param Request
@@ -350,14 +298,15 @@ class SingleProjectController extends Controller
         if ($request->isMethod("GET")) {
             $project_details = ProjectDetails::where("project_id", $request->project_id)->first();
             if ($project_details) {
+                $new_task = [];
                 $old_tasks =  json_decode($project_details->subtask);
                 foreach ($old_tasks as $key => $task) {
-                    if ($task->id == $request->task_id) {
-                        unset($old_tasks[$key]);
+                    if ($task->id != $request->task_id) {
+                        array_push($new_task, $task);
                     }
                 }
-                $project_details->update(["subtask" => json_encode($old_tasks)]);
-                return $old_tasks;
+                $project_details->update(["subtask" => json_encode($new_task)]);
+                return json_encode($new_task);
             }
         }
     }

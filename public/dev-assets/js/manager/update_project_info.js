@@ -1,3 +1,4 @@
+//Updateing project name ( ajax call )
 function updateProjectName(project_id, project_name) {
     $.ajax({
         headers: {
@@ -15,6 +16,7 @@ function updateProjectName(project_id, project_name) {
     });
 
 }
+//Updateing project description ( ajax call )
 function updateProjectDescription(project_id, project_description) {
     $.ajax({
         headers: {
@@ -33,7 +35,7 @@ function updateProjectDescription(project_id, project_description) {
 
 }
 
-
+// Double click on project name to update project name
 $("#tdg_project_name").on("dblclick", function () {
     $(this).prop("contenteditable", true);
     $(this).focus();
@@ -56,6 +58,7 @@ $("#tdg_project_name").on("dblclick", function () {
     });
 
 });
+// Double click on project description to update project description
 $("#tdg_project_description").on("dblclick", function () {
     $(this).prop("contenteditable", true);
     $(this).focus();

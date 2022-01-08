@@ -17,7 +17,7 @@ class Project extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'assign_employee', 'due_date', 'status', 'priority', 'description', 'budget', 'payment_amount', 'manager_id', 'manager_id', 'project_files', 'client_id'
+        'project_name', 'assign_employee', 'due_date', 'status', 'priority', 'description', 'budget', 'payment_amount', 'manager_id', 'client_id', 'project_type'
     ];
     /**
      * finding client projects
@@ -28,5 +28,10 @@ class Project extends Model
     {
         $client_projects =  DB::table('project')->where('client_id', auth()->user()->id)->where('status', '!=', 'todo')->get(['id', 'name']);
         return $client_projects;
+    }
+
+    public function ProjectSubtask()
+    {
+        return $this->hasMany(ProjectSubtask::class);
     }
 }

@@ -17,103 +17,132 @@ use App\ProjectDetails;
 class ProjectController extends Controller
 {
     /**
+     * View all project
+     * @param Request
+     * @return GET::all_project_details
+     *
+     *
+     */
+    public function view(Request $request)
+    {
+        if ($request->isMethod("GET")) {
+            $record = Project::all();
+            $user = [];
+            for ($i = 0; $i < sizeof($record); $i++) {
+                $record[$i]->assign_employee = rtrim($record[$i]->assign_employee, ", ");
+                $user[$i] = User::find(explode(",", $record[$i]->assign_employee));
+            }
+            if (Auth::user()->role == "admin") {
+                return view("admin.view_project", ['record' => $record, 'user' => $user]);
+            } else {
+                return view("manager.view_project", ['record' => $record, 'user' => $user]);
+            }
+        } else {
+            return redirect('/');
+        }
+    }
+    /**
      * Adding New Project
      * @param Request
      * @return GET::Add_project_page
      * @return Post::Adding_project_data
      *
      */
-    public function addProject(Request $request)
+    public function create(Request $request)
     {
         if ($request->isMethod("GET")) {
             $record = Project::take(3)->orderBy('due_date', 'desc')->get();
-            // dd($record);
-            //dd(json_decode($record[0]->project_files)[1]);
-            //Converting the string into id array
             $user = [];
             for ($i = 0; $i < sizeof($record); $i++) {
                 $record[$i]->assign_employee = rtrim($record[$i]->assign_employee, ", ");
                 $user[$i] = User::find(explode(",", $record[$i]->assign_employee));
             }
-            //  dd($user);
-            return view("manager.add_project", ['record' => $record, 'user' => $user]);
+            if (Auth::user()->role == "admin") {
+                return view("admin.add_project", ['record' => $record, 'user' => $user]);
+            } else {
+                return view("manager.add_project", ['record' => $record, 'user' => $user]);
+            }
         } else if ($request->isMethod("POST")) {
 
-            $data['project_name'] = $request->tdg_project_name;
+            //extracting ids from the string
             $ids = '';
             $ids = extracting_ids($request->tdg_assignee_member);
             $client_id = extracting_client_id($request->tdg_client_ID);
-            $data['assignee_member'] = $ids;
-            $data['due_date'] = $request->tdg_project_date;
-            $data['status'] = $request->tdg_project_status;
-            $data['priority'] = $request->tdg_project_priority;
-            $data['budget'] = $request->tdg_project_budget;
-            $data['client_ID'] = $client_id;
+
+            $data['project_name'] = $request->tdg_project_name;
+            $data['project_assigned_member'] = $ids;
+            $data['project_due_date'] = $request->tdg_project_date;
+            $data['project_status'] = $request->tdg_project_status;
+            $data['project_priority'] = $request->tdg_project_priority;
             $data['project_description'] = $request->tdg_project_description;
-            $data['files'] = $request->photos;
+            $data['project_type'] = $request->tdg_project_type;
 
-            // dd($data);
 
-            $validator = Validator::make($data, [
-                'project_name' => ['required', 'string', 'max:255'],
-                'assignee_member' => ['required', 'string', 'max:255'],
-                'due_date' => ['required', 'date', 'max:255'],
-                'status' => ['required', 'string', 'max:255'],
-                'priority' => ['required', 'string', 'max:255'],
-                'budget' => ['required'],
-                'client_ID' => ['required'],
-                'project_description' => ['required', 'string', 'max:255'],
-                'files' => 'required',
-                'files.*' => 'mimes:pdf,docx,zip'
-            ]);
+            //validation
+            if ($data["project_type"] == "client") {
+                $data['project_budget'] = $request->tdg_project_budget;
+                $data['client_id'] = $client_id;
+
+                $validator = Validator::make($data, [
+                    'project_name' => ['required', 'string', 'max:255'],
+                    'project_assigned_member' => ['required', 'string', 'max:255'],
+                    'project_due_date' => ['required', 'date', 'max:255'],
+                    'project_status' => ['required', 'string', 'max:255'],
+                    'project_priority' => ['required', 'string', 'max:255'],
+                    'project_description' => ['string', 'max:255'],
+                    'project_type' => ['required', 'string', 'max:255'],
+                    'project_budget' => ['required', 'integer', 'gt:0'],
+                    'client_id' => ['required', 'integer', 'max:255'],
+                ]);
+            } else {
+                $data['project_budget'] = 0;
+                $data['client_id'] = 0;
+
+                $validator = Validator::make($data, [
+                    'project_name' => ['required', 'string', 'max:255'],
+                    'project_assigned_member' => ['required', 'string', 'max:255'],
+                    'project_due_date' => ['required', 'date', 'max:255'],
+                    'project_status' => ['required', 'string', 'max:255'],
+                    'project_priority' => ['required', 'string', 'max:255'],
+                    'project_description' => ['string', 'max:255'],
+                    'project_type' => ['required', 'string', 'max:255'],
+                ]);
+            }
+
             if ($validator->fails()) {
+                //validation fail redirection
                 return redirect("/manager/add-project")
                     ->withErrors($validator)
                     ->withInput();
             } else {
-                if ($request->hasfile('photos')) {
-                    foreach ($request->file('photos') as $file) {
-                        $name = time() . '.' . $file->extension();
-                        $new_data['files'][] = $name;
-                    }
-                }
-                // dd($new_data["files"]);
-                // dd(json_encode($data['files']));
+                //storing project data in database
                 $record = Project::create([
-                    'name' => filter_var($data['project_name'], FILTER_SANITIZE_STRING),
-                    'assign_employee' => filter_var($data['assignee_member'], FILTER_SANITIZE_STRING),
-                    'due_date' => $data['due_date'],
-                    'status' =>  $data['status'],
-                    'priority' => $data['priority'],
-                    'description' => filter_var($data['project_description'], FILTER_SANITIZE_STRING),
-                    'budget' => $data['budget'],
-                    'payment_amount' => 0,
+                    'project_name' => filter_var($data['project_name'], FILTER_SANITIZE_STRING),
+                    'assign_employee' => filter_var($data['project_assigned_member'], FILTER_SANITIZE_STRING),
                     'manager_id' => Auth::user()->id,
-                    'client_id' => $data['client_ID'],
-                    'project_files' => json_encode($new_data["files"]),
+                    'due_date' => $data['project_due_date'],
+                    'status' =>  $data['project_status'],
+                    'priority' => $data['project_priority'],
+                    'description' => filter_var($data['project_description'], FILTER_SANITIZE_STRING),
+                    'project_type' => $data['project_type'],
+                    'budget' => $data['project_budget'],
+                    'payment_amount' => 0,
+                    'client_id' => $data['client_id'],
                 ]);
                 if ($record) {
-                    $project_details = ProjectDetails::create([
-                        'project_id' => $record->id,
-                        'subtask' => json_encode([]),
-                        'project_manager_id' => null
-                    ]);
-                    $counter = 0;
-                    foreach ($request->file('photos') as $file) {
-                        $file->move(public_path() . '/files/' . $record->id, $new_data['files'][$counter]);
-                        $counter++;
-                    }
-                    return redirect()->back()->with(session()->flash('alert-success', 'Project added successfully!'));
+                    //Success message
+                    return redirect()->back()->with(session()->flash('alert-success', 'Project added successfully! '));
                 } else {
-                    Session::flash('error', 'Something went wrong ! Try Again');
-                    return View::make('partials/flash_message');
+                    //DB error redirection
+                    return redirect()->back()->with(session()->flash('alert-success', 'Project added successfully! '));
                 }
             }
         } else {
-            Session::flash('error', 'Something went wrong ! Try Again');
-            return View::make('partials/flash_message');
+            //invaild request redirection
+            return redirect()->back()->with(session()->flash('alert-success', 'Project added successfully! '));
         }
     }
+
     /**
      * Deleting Project
      * @param Request @param project_Id
@@ -121,7 +150,7 @@ class ProjectController extends Controller
      *
      *
      */
-    public function deleteProject(Request $request, $id)
+    public function delete(Request $request, $id)
     {
         if ($request->isMethod("GET")) {
             $project = Project::find($id);
@@ -141,7 +170,7 @@ class ProjectController extends Controller
      *
      *
      */
-    public function undoProject(Request $request, $id)
+    public function undo_delete(Request $request, $id)
     {
         if ($request->isMethod("GET")) {
             $project = Project::withTrashed()->find($id);
@@ -150,6 +179,7 @@ class ProjectController extends Controller
                 $project->restore();
                 return redirect()->back()->with(session()->flash('alert-undoed', 'Project restored successfully! '));
             } else {
+                return redirect()->back()->with(session()->flash('alert-undoed', 'Something went wrong! '));
             }
         }
     }
@@ -213,27 +243,7 @@ class ProjectController extends Controller
             }
         }
     }
-    /**
-     * View all project
-     * @param Request
-     * @return GET::all_project_details
-     *
-     *
-     */
-    public function viewProject(Request $request)
-    {
-        if ($request->isMethod("GET")) {
-            $record = Project::all();
-            $user = [];
-            for ($i = 0; $i < sizeof($record); $i++) {
-                $record[$i]->assign_employee = rtrim($record[$i]->assign_employee, ", ");
-                $user[$i] = User::find(explode(",", $record[$i]->assign_employee));
-            }
-            return view("manager.view_project", ['record' => $record, 'user' => $user]);
-        } else {
-            return redirect('/');
-        }
-    }
+
     /**
      * Sorting project by month
      * @param Request
@@ -244,7 +254,12 @@ class ProjectController extends Controller
     public function sortBymonth(Request $request)
     {
         if ($request->isMethod("POST")) {
-            $record = Project::whereMonth('created_at', $request->month)->get();
+            if ($request->month == 'none') {
+                $record = Project::all();
+            } else {
+                $record = Project::whereMonth('created_at', $request->month)->get();
+            }
+
             // dd($record);
             $user = [];
             for ($i = 0; $i < sizeof($record); $i++) {
@@ -281,7 +296,7 @@ class ProjectController extends Controller
                     $data .=  '<tr id="row"' . 'onclick="window.location=' . $url . '";>' .
                         '<td id="name"' . 'style="padding: 17px 10px !important; width:50%;">' .
                         $icon .
-                        $item->name .
+                        $item->project_name .
                         '</td>' .
                         '<td>' . $names[$k] . '</td>' .
                         '<td>' . Carbon::parse($item->due_date)->format('d-m-Y')  . '</td>' .
@@ -304,7 +319,12 @@ class ProjectController extends Controller
     public function sortByYear(Request $request)
     {
         if ($request->isMethod("POST")) {
-            $record = Project::whereYear('created_at', $request->year)->get();
+            if ($request->year == 'none') {
+                $record = Project::all();
+            } else {
+                $record = Project::whereYear('created_at', $request->year)->get();
+            }
+
             // dd($record);
             $user = [];
             for ($i = 0; $i < sizeof($record); $i++) {
@@ -341,7 +361,7 @@ class ProjectController extends Controller
                     $data .=  '<tr id="row"' . 'onclick="window.location=' . $url . '";>' .
                         '<td id="name"' . 'style="padding: 17px 10px !important; width:50%;">' .
                         $icon .
-                        $item->name .
+                        $item->project_name .
                         '</td>' .
                         '<td>' . $names[$k] . '</td>' .
                         '<td>' . Carbon::parse($item->due_date)->format('d-m-Y')  . '</td>' .
@@ -434,7 +454,7 @@ class ProjectController extends Controller
     public function searchProject(Request $request)
     {
         if ($request->isMethod("POST")) {
-            $record = Project::where('name', 'like', '%' . $request->que . '%')->get();
+            $record = Project::where('project_name', 'like', '%' . $request->que . '%')->get();
             // dd($record);
             $user = [];
             for ($i = 0; $i < sizeof($record); $i++) {
@@ -471,7 +491,7 @@ class ProjectController extends Controller
                     $data .=  '<tr id="row"' . 'onclick="window.location=' . $url . '";>' .
                         '<td id="name"' . 'style="padding: 17px 10px !important; width:50%;">' .
                         $icon .
-                        $item->name .
+                        $item->project_name .
                         '</td>' .
                         '<td>' . $names[$k] . '</td>' .
                         '<td>' . Carbon::parse($item->due_date)->format('d-m-Y')  . '</td>' .
@@ -485,17 +505,6 @@ class ProjectController extends Controller
             }
         }
     }
-
-    // public function stageChange(Request $request)
-    // {
-    //     if ($request->isMethod("GET")) {
-    //         $project = Project::find($request->p_id);
-    //         if ($project) {
-    //             $project->update(["status" => $request->stage]);
-    //             $project->save();
-    //         }
-    //     }
-    // }
     public function exitingMember(Request $request)
     {
         if ($request->isMethod("POST")) {
