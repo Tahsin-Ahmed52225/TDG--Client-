@@ -144,25 +144,24 @@
                                                                     <!--end::Header-->
                                                                     <!--begin::Body-->
                                                                     <div class="card-body pt-2" id="task_board">
-                                                                    {{-- @if($tasks)
-                                                                        @foreach ( $tasks as $items ) --}}
-                                                                            <div class="d-flex align-items-center mt-3">
+                                                                    @if($tasks)
+                                                                        @foreach ( $tasks as $items )
+                                                                            <div class="d-flex align-items-center mt-3" id="task{{ $items->id }}">
                                                                                                         <!--begin::Bullet-->
                                                                                                     <span class="bullet bullet-bar bg-success align-self-stretch"></span>
                                                                                                     <!--end::Bullet-->
                                                                                                     <!--begin::Checkbox-->
-                                                                                                    <label class="checkbox checkbox-lg checkbox-light-success checkbox-inline flex-shrink-0 m-0 mx-4">
-                                                                                                        <input type="checkbox" name="select" value="1"
-                                                                                                        {{-- @if( $items->complete == "true")
-                                                                                                            checked
-                                                                                                        @endif --}}
-                                                                                                        >
+                                                                                                    <label class="checkbox checkbox-lg checkbox-light-success checkbox-inline flex-shrink-0 m-0 mx-4"  >
+                                                                                                        <input type="checkbox" name="select" data-id={{ $items->id}} class="task_checkbox"  {{ $items->complete == 1 ? 'checked' : '' }}>
                                                                                                         <span></span>
                                                                                                     </label>
                                                                                                     <!--end::Checkbox-->
                                                                                                     <!--begin::Text-->
-                                                                                                    <div class="d-flex flex-column flex-grow-1" >
-                                                                                                        <div class="text-dark-75 text-hover-primary font-weight-bold font-size-lg mb-1 sub_task_title"  style="margin-top:4px; height:20px;"> Demo Task</div>
+                                                                                                    <div class="d-flex flex-column flex-grow-1" data-toggle="modal" data-target="#exampleModal{{ $items->id }}" style="cursor: pointer;">
+                                                                                                        <div class="text-dark-75 text-hover-primary font-weight-bold font-size-lg mb-1 sub_task_title" id="taskname{{ $items->id }}" data-id={{ $items->id}}  style="margin-top:4px; height:20px;
+                                                                                                            @if( $items->complete == 1)
+                                                                                                                text-decoration: line-through;
+                                                                                                            @endif">{{ $items->Name }}</div>
                                                                                                     </div>
                                                                                                     <!--end::Text-->
                                                                                                     <!--begin::Dropdown-->
@@ -174,8 +173,8 @@
                                                                                                             <!--begin::Navigation-->
                                                                                                             <ul class="navi navi-hover">
                                                                                                                 <li class="navi-item bg-light-danger rounded">
-                                                                                                                        <a  class="sub_task_delete navi-link"
-                                                                                                                            <span class="navi-text">
+                                                                                                                        <a  class="sub_task_delete navi-link" data-id={{ $items->id}}>
+                                                                                                                            <span class="navi-text" >
                                                                                                                                 Delete Task
                                                                                                                             </span>
                                                                                                                         </a>
@@ -185,11 +184,38 @@
                                                                                                         </div>
                                                                                                     </div>
 
-                                                                            </div>
-                                                                        {{-- @endforeach
-                                                                    @endif --}}
+                                                                              </div>
+                                                                              {{-- sub task details starts --}}
+                                                                              <!-- Button trigger modal -->
+                                                                                <!-- Modal -->
+                                                                                <div class="modal fade" id="exampleModal{{ $items->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                                                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                                                                                    <div class="modal-content">
+                                                                                        <div class="modal-header">
+                                                                                        <h5 class="modal-title" id="exampleModalLabel">{{ $items->Name }}</h5>
+                                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                            <span aria-hidden="true" style="display:block;">&times;</span>
+                                                                                        </button>
+                                                                                        </div>
+                                                                                        font-style: italic;
+                                                                                        color: #bbbbbb;
+                                                                                        <div class="modal-body">
+                                                                                            <div class="  {{  $items->Description == null ? 'nulled_task' : 'des' }}">
+                                                                                                {{  $items->Description == null ? '@Double Tap To Add Description' : $items->Description }}
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                        <div class="modal-footer">
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                              {{-- sub task details ends --}}
+                                                                        @endforeach
+                                                                    @endif
                                                                     </div>
                                                                     <!--end::Body-->
+
                                                                 </div>
                                                                 <!--end:List Widget 4-->
                                                             </div>
@@ -854,6 +880,24 @@
         </div>
     </div>
 </div>
+{{-- Toaster Code Starts --}}
+
+<div class="position-fixed bottom-0 right-0 p-3" style="z-index: 5; right: 0; bottom: 0;">
+    <div id="liveToast" class="toast hide toast-success" role="alert" aria-live="assertive" aria-atomic="true" data-delay="2000" style="height: 80px; width:450px;">
+      <div class="toast-header">
+        <strong class="mr-auto">Notifications</strong>
+
+        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="toast-body">
+        Hello, world! This is a toast message.
+      </div>
+    </div>
+  </div>
+{{-- Toaster Code Ends --}}
+
 @endsection
 
 @section("scripts")
@@ -879,5 +923,6 @@
   {{-- filepond JS --}}
   <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
   <script src="{{ asset("dev-assets/js/single_project_file_upload.js") }}"></script>
+  <script src="//cdn.bootcss.com/toastr.js/latest/js/toastr.min.js"></script>
 
 @endsection
