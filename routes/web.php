@@ -116,10 +116,9 @@ Route::prefix('manager')->name('manager.')->middleware(['auth', 'manager'])->gro
     Route::post('/update-project-description', 'ManagerSingleProjectController@updateProjectDescription')->name("update_project_description");
     ##Project Task Routes
     Route::get('/get_new_task_id', 'ProjectSubtaskController@getNewTaskID')->name("get_new_task_id");
-    Route::post('/cnst', 'SingleProjectController@createNewtask')->name("create_new_task");
-
-    Route::get('/gots', 'SingleProjectController@getOldTaskStage')->name("get_old_task_stage");
-    Route::post('/delete-project-task/{project_id}', 'SingleProjectController@deleteProjectTask')->name("delete_project_task");
+    Route::get('/update_subtask_title', 'ProjectSubtaskController@updateSubtaskTitle')->name("update_subtask_title");
+    Route::get('/update_subtask_status', 'ProjectSubtaskController@updateSubtaskStatus')->name("update_subtask_status");
+    Route::get('/delete-project-task', 'ProjectSubtaskController@deleteProjectTask')->name("delete_project_task");
 
 
 
@@ -139,6 +138,9 @@ Route::prefix('manager')->name('manager.')->middleware(['auth', 'manager'])->gro
     ######Additional helping routes for projects
     Route::post('/all-member', 'ProjectController@allMember')->name("all_member");
     Route::post('/all-client', 'ProjectController@allClient')->name("all_client");
+
+    #Random name picker
+    Route::match(['get', 'post'], '/name-picker', 'NamePickerController@index')->name('name_picker');
 });
 
 

@@ -18,14 +18,72 @@ class ProjectSubtaskController extends Controller
     public function getNewTaskID(Request $request)
     {
         if ($request->isMethod("GET")) {
-            $project_subtasks = ProjectSubtask::where("project_id", $request->project_id)->get("id");
+            $project_subtasks = ProjectSubtask::all();
             if (count($project_subtasks) > 0) {
-                return (count($project_subtasks) + 1);
+                $latest_task_id = $project_subtasks->last()->id;
+
+                return ($latest_task_id + 1);
             } else {
-                return 1;
+                $demo_subTask = ProjectSubtask::create([
+                    'Name' => "Demo Task",
+                    'project_id' => $request->project_id,
+                ]);
+                $new_index = $demo_subTask->id + 1;
+                $demo_subTask->delete();
+                return $new_index;
             }
         } else {
             redirect("/");
+        }
+    }
+    /**
+     * Create or Update the subtask title
+     * @param Request
+     * @return Show_new_subtask_title
+     *
+     */
+    public function updateSubtaskTitle(Request $request)
+    {
+        //find if subtask already exist
+        if ($request->ajax()) {
+            $project_subtask = ProjectSubtask::find($request->subtask_id);
+            if ($project_subtask) {
+                $project_subtask->Name = $request->subtask_title;
+                $project_subtask->save();
+                return $request->subtask_title;
+            } else {
+                //create new subtask
+                $sutask = ProjectSubtask::create([
+                    'Name' => $request->subtask_title,
+                    'project_id' => $request->project_id,
+                ]);
+                return $request->subtask_title;
+            }
+        }
+    }
+    public function updateSubtaskStatus(Request $request)
+    {
+        if ($request->ajax()) {
+            $project_subtask = ProjectSubtask::find($request->subtask_id);
+            if ($project_subtask) {
+                $project_subtask->complete = $project_subtask->complete == 0 ? 1 : 0;
+                $project_subtask->save();
+                return $project_subtask->complete;
+            } else {
+                // return response()->json(["success" => false]);
+            }
+        }
+    }
+    public function deleteProjectTask(Request $request)
+    {
+        if ($request->ajax()) {
+            $project_subtask = ProjectSubtask::find($request->subtask_id);
+            if ($project_subtask) {
+                $project_subtask->delete();
+                return response()->json(["success" => true]);
+            } else {
+                return response()->json(["success" => false]);
+            }
         }
     }
 }
