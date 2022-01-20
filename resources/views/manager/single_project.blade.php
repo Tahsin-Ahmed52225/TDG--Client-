@@ -131,7 +131,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="row">
-                                                            <div class="col-md-6">
+                                                            <div class="col-md-12">
                                                                 <!--begin::List Widget 4-->
                                                                 <div class="card card-custom card-stretch gutter-b">
                                                                     <!--begin::Header-->
@@ -192,7 +192,7 @@
                                                                                     <div class="modal-dialog modal-dialog-centered modal-lg">
                                                                                     <div class="modal-content">
                                                                                         <div class="modal-header">
-                                                                                        <h5 class="modal-title" id="exampleModalLabel" data-id={{ $items->id }}>{{ $items->Name }}</h5>
+                                                                                        <h5 class="modal-title" id="exampleModalLabel" data-id={{ $items->id }} style="width:90%">{{ $items->Name }}</h5>
                                                                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                                                             <span aria-hidden="true" style="display:block;">&times;</span>
                                                                                         </button>
@@ -218,7 +218,7 @@
                                                                 </div>
                                                                 <!--end:List Widget 4-->
                                                             </div>
-                                                            <div class="col-md-6">
+                                                            {{-- <div class="col-md-6">
                                                                 <div class="card card-custom card-stretch gutter-b">
                                                                     <!--begin::Header-->
                                                                     <div class="card-header align-items-center border-0 mt-4">
@@ -420,7 +420,7 @@
                                                                     </div>
                                                                     <!--end: Card Body-->
                                                                 </div>
-                                                            </div>
+                                                            </div> --}}
 
                                                         </div>
                                                     </div>
@@ -902,7 +902,6 @@
 @section("scripts")
 <script src="{{ asset("dev-assets/js/manager/update_project_info.js") }}"></script>
 <script src="{{ asset("dev-assets/js/manager/subtask.js") }}"></script>
-<script src="{{ asset("dev-assets/js/manager/update_project_subtask_info.js") }}"></script>
 
 <script>
     tinymce.init({

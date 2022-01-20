@@ -47,7 +47,7 @@ $("#tdg_project_name").on("dblclick", function () {
             } else {
                 $(this).prop("contenteditable", false);
                 $(this).html(function () {
-                    $(this).html = $(this).html().replace(/(?:&nbsp;|<br>)/, '');
+                    $(this).html = $(this).html().replace(/(&nbsp;|<br>)/, '');
                 });
                 updateProjectName($(this).data("ivalue"), $(this).html());
 
