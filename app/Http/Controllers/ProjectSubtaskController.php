@@ -86,4 +86,17 @@ class ProjectSubtaskController extends Controller
             }
         }
     }
+    public function updateSubtaskdescription(Request $request)
+    {
+        if ($request->ajax()) {
+            $project_subtask = ProjectSubtask::find($request->subtask_id);
+            if ($project_subtask) {
+                $project_subtask->Description = $request->description;
+                $project_subtask->save();
+                return response()->json(["success" => true]);
+            } else {
+                return response()->json(["success" => false]);
+            }
+        }
+    }
 }

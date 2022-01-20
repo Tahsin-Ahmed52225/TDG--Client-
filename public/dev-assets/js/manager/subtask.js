@@ -25,7 +25,8 @@ $(document).ready(function () {
         changeStage($(e.target).data("id"));
     });
     //Updating subtask on double click
-    $("#task_board").on('dblclick', '.sub_task_title', function (e) {
+    $("#task_board").on('dblclick', '.modal-title', function (e) {
+        //alert($(this).data("id"));
         updateTask(e, $(this).data("id"));
     });
     //Deleteing subtask on delete button click
@@ -79,6 +80,7 @@ $(document).ready(function () {
 
     //Save Subtask title
     function saveTask(text, i) {
+        console.log(i);
         $.ajax({
             type: 'GET',
             url: '../update_subtask_title',

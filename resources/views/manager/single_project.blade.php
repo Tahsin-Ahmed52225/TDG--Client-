@@ -192,15 +192,14 @@
                                                                                     <div class="modal-dialog modal-dialog-centered modal-lg">
                                                                                     <div class="modal-content">
                                                                                         <div class="modal-header">
-                                                                                        <h5 class="modal-title" id="exampleModalLabel">{{ $items->Name }}</h5>
+                                                                                        <h5 class="modal-title" id="exampleModalLabel" data-id={{ $items->id }}>{{ $items->Name }}</h5>
                                                                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                                                             <span aria-hidden="true" style="display:block;">&times;</span>
                                                                                         </button>
                                                                                         </div>
-                                                                                        font-style: italic;
-                                                                                        color: #bbbbbb;
+
                                                                                         <div class="modal-body">
-                                                                                            <div class="  {{  $items->Description == null ? 'nulled_task' : 'des' }}">
+                                                                                            <div id="subtask_description{{ $items->id }}"  class="{{  $items->Description == null ? 'nulled_task' : 'Sub_task_description' }} sub_task_description" data-ivalue={{  $items->id }}>
                                                                                                 {{  $items->Description == null ? '@Double Tap To Add Description' : $items->Description }}
                                                                                             </div>
 
@@ -903,6 +902,8 @@
 @section("scripts")
 <script src="{{ asset("dev-assets/js/manager/update_project_info.js") }}"></script>
 <script src="{{ asset("dev-assets/js/manager/subtask.js") }}"></script>
+<script src="{{ asset("dev-assets/js/manager/update_project_subtask_info.js") }}"></script>
+
 <script>
     tinymce.init({
       selector: 'textarea',

@@ -101,3 +101,12 @@
 .subtask_delete {
     cursor: pointer;
 }
+
+.nulled_task {
+    font-style: italic;
+    color: #bbbbbb;
+}
+
+.Sub_task_description {
+    color: black;
+}

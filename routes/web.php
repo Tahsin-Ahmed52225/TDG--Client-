@@ -119,6 +119,8 @@ Route::prefix('manager')->name('manager.')->middleware(['auth', 'manager'])->gro
     Route::get('/update_subtask_title', 'ProjectSubtaskController@updateSubtaskTitle')->name("update_subtask_title");
     Route::get('/update_subtask_status', 'ProjectSubtaskController@updateSubtaskStatus')->name("update_subtask_status");
     Route::get('/delete-project-task', 'ProjectSubtaskController@deleteProjectTask')->name("delete_project_task");
+    Route::get('/update-subtask-description', 'ProjectSubtaskController@updateSubtaskdescription')->name("update_subtask_description");
+
 
 
 
