@@ -124,12 +124,15 @@ Route::prefix('manager')->name('manager.')->middleware(['auth', 'manager'])->gro
 
 
 
+
     #Single Project Route - ( Project Unit )
     Route::post('/exiting-member', 'ProjectController@exitingMember')->name("exiting_member");
-    Route::post('single-project/{id}/update-project-member', 'SingleProjectController@updateProjectMember')->name("update_project_member");
-    Route::post('/assign-project-member/{project_id}', 'SingleProjectController@assignProjectManager')->name("assignProjectManager");
-    Route::post('/remove-member/{project_id}', 'SingleProjectController@removeMember')->name("remove_member");
-    Route::post('/remove-manager/{project_id}', 'SingleProjectController@removeManager')->name("remove_p_manager");
+    #
+    Route::post('single-project/{id}/update-project-member', 'ManagerSingleProjectController@updateProjectMember')->name("update_project_member");
+    Route::post('/remove-member/{project_id}', 'ManagerSingleProjectController@removeMember')->name("remove_member");
+    #
+    Route::post('/assign-project-member/{project_id}', 'ManagerSingleProjectController@assignProjectManager')->name("assign_project_manager");
+    Route::post('/remove-manager/{project_id}', 'ManagerSingleProjectController@removeManager')->name("remove_p_manager");
 
     #Single Project Route - ( Project Discussion )
     Route::post('single-project/{id}/add-discussion', 'SingleProjectController@addDiscussion')->name("add_discussion");

@@ -204,7 +204,20 @@
                                                                                             </div>
 
                                                                                         </div>
-                                                                                        <div class="modal-footer">
+                                                                                        <div class="modal-footer" style="display:block">
+                                                                                            <div style="font-size:12px">Members:</div>
+                                                                                            <i style="font-size: 25px;" class="far fa-user-circle"></i>
+                                                                                            <div class="dropdown">
+                                                                                                <i class=" flaticon-add-circular-button dropdown-toggle" style="font-size: 25px;"  role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false" ></i>
+                                                                                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                                                                                        <li><a class="dropdown-item" href="#">Action</a></li>
+                                                                                                        <li><a class="dropdown-item" href="#">Another action</a></li>
+                                                                                                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                                                                                    </ul>
+                                                                                            </div>
+
+
+
                                                                                         </div>
                                                                                     </div>
                                                                                     </div>
@@ -462,7 +475,7 @@
                                                                                                 <td class="text-left align-middle">{{ $item->name }}</td>
                                                                                                 <td class="align-middle">{{ $item->position }}</td>
                                                                                                 <td>
-                                                                                                    <form method="POST" action="{{ route("manager.assignProjectManager", $project->id) }}">
+                                                                                                    <form method="POST" action="{{ route("manager.assign_project_manager", $project->id) }}">
                                                                                                     @csrf
                                                                                                         <button class="btn btn-sm btn-primary" type="submit" name="project_manager" value="{{ $item->id }}" >Assign</button>
                                                                                                     </form>
@@ -569,12 +582,12 @@
                                                                                     </form>
 
                                                                                     @elseif($project_manager == NULL)
-                                                                                        <form method="POST" action="{{ route("manager.assignProjectManager",$project->id) }}">
+                                                                                        <form method="POST" action="{{ route("manager.assign_project_manager",$project->id) }}">
                                                                                         @csrf
                                                                                             <button type="submit" name="project_manager" value="{{ $item->id }}" class="btn btn-lg btn-primary"><i class="fas fa-user-plus"></i>Make P.Manager</button>
                                                                                         </form>
                                                                                     @else
-                                                                                        <form method="POST" action="{{ route("manager.assignProjectManager",$project->id) }}">
+                                                                                        <form method="POST" action="{{ route("manager.assign_project_manager",$project->id) }}">
                                                                                             @csrf
                                                                                              <button type="submit" name="project_manager" value="{{ $item->id }}" class="btn btn-lg btn-info"><i class="fas fa-people-arrows"></i></i>Change P.Manager</button>
                                                                                         </form>
@@ -919,7 +932,7 @@
 
   <script src="{{ asset("dev-assets/js/tag2.input.js") }}"></script>
   <script src="{{ asset("js/typeahead-main.js") }}" ></script>
-  <script src="{{ asset("dev-assets/js/typehead.js") }}"></script>
+  <script src="{{ asset("dev-assets/js/manager/typehead.js") }}"></script>
   {{-- filepond JS --}}
   <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
   <script src="{{ asset("dev-assets/js/single_project_file_upload.js") }}"></script>

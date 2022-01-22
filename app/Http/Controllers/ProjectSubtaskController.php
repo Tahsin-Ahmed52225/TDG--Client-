@@ -61,6 +61,12 @@ class ProjectSubtaskController extends Controller
             }
         }
     }
+    /**
+     * Changing subtask status
+     * @param Request
+     * @return updated_subtask_status
+     *
+     */
     public function updateSubtaskStatus(Request $request)
     {
         if ($request->ajax()) {
@@ -74,6 +80,12 @@ class ProjectSubtaskController extends Controller
             }
         }
     }
+    /**
+     * Delete subtask
+     * @param Request
+     * @return respnse_status
+     *
+     */
     public function deleteProjectTask(Request $request)
     {
         if ($request->ajax()) {
@@ -86,6 +98,12 @@ class ProjectSubtaskController extends Controller
             }
         }
     }
+    /**
+     * Update subtask description
+     * @param Request
+     * @return respnse_status
+     *
+     */
     public function updateSubtaskdescription(Request $request)
     {
         if ($request->ajax()) {
