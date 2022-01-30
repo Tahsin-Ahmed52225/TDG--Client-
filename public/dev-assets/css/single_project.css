@@ -110,3 +110,32 @@
 .Sub_task_description {
     color: black;
 }
+
+.countdown_section {
+    color: white;
+    display: inline-block;
+    font-size: 10px;
+    list-style-type: none;
+    padding: 10px;
+    text-transform: uppercase;
+}
+
+.countdown_section span {
+    display: block;
+    font-size: 30px;
+}
+
+.emoji {
+    display: none;
+    padding: 1rem;
+}
+
+.emoji span {
+    font-size: 4rem;
+    padding: 0 .5rem;
+}
+
+#heading {
+    display: none;
+    color: white;
+}

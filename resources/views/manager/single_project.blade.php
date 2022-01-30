@@ -3,6 +3,7 @@
 @section("links")
 <link rel="stylesheet" href="{{ asset("dev-assets/css/tag.input.css") }}">
 <link rel="stylesheet" href="{{ asset("dev-assets/css/single_project.css") }}">
+<link rel="stylesheet" href="{{ asset("dev-assets/css/tooltip.css") }}">
 <script src="https://cdn.tiny.cloud/1/30h4n7mvg0u2p41o4jsx8y4fb4ev21mqq6j8xbs3nmbgf236/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
 <meta name="csrf-token" content="{{ csrf_token() }}">
 {{-- filepond CSS --}}
@@ -53,7 +54,7 @@
                                         <div class="tab-pane fade show active" id="home-1" role="tabpanel" aria-labelledby="home-tab-1">
 
                                         {{-- this is overview page  --}}
-                                        <div class="card card-custom">
+                                        <div class="card card-custom p-4">
                                                         <div class="card-header">
                                                             <div class="card-title">
                                                                 <span class="card-icon">
@@ -103,13 +104,26 @@
                                                         <div class="row">
                                                             <div class="col-xl-6">
                                                                 <!--begin::Tiles Widget 7-->
-                                                                <div class="card card-custom bgi-no-repeat gutter-b card-stretch" style="background-color: #1B283F; background-position: 0 calc(100% + 0.5rem); background-size: 100% auto; background-image: url(assets/media/svg/patterns/rhone.svg)">
+                                                                <div id="timer_section" data-date={{ \Carbon\Carbon::parse($project->due_date)->format('m/d/Y')}}  class="card card-custom gutter-b card-stretch " style="background-color: #1B283F;">
                                                                     <!--begin::Body-->
-                                                                    <div class="card-body">
-                                                                        <div class="p-4">
-                                                                            <h3 class="text-white font-weight-bolder my-7">Create CRM Reports</h3>
-                                                                            <a href='#' class="btn btn-danger font-weight-bold px-6 py-3">Create Report</a>
+                                                                    <div class="card-body d-flex justify-content-center align-items-center">
+                                                                        <div id="heading"> <h1>Time Out</h1> </div>
+                                                                        <div id="countdown">
+                                                                            <ul style="padding-left:0px;">
+                                                                              <li class="countdown_section">days<span id="days"></span></li>
+                                                                              <li class="countdown_section">Hours<span id="hours"></span></li>
+                                                                              <li class="countdown_section">Minutes<span id="minutes"></span></li>
+                                                                              <li class="countdown_section">Seconds<span id="seconds"></span></li>
+                                                                            </ul>
+
+                                                                            <div id="content" class="emoji">
+                                                                                <span>🥳</span>
+                                                                                <span>🎉</span>
+                                                                                <span>🎂</span>
+                                                                            </div>
+
                                                                         </div>
+
                                                                     </div>
                                                                     <!--end::Body-->
                                                                 </div>
@@ -143,8 +157,11 @@
                                                                     </div>
                                                                     <!--end::Header-->
                                                                     <!--begin::Body-->
-                                                                    <div class="card-body pt-2" id="task_board">
+                                                                    <div class="card-body" id="task_board">
                                                                     @if($tasks)
+                                                                         @php
+                                                                              $i = 0;
+                                                                         @endphp
                                                                         @foreach ( $tasks as $items )
                                                                             <div class="d-flex align-items-center mt-3" id="task{{ $items->id }}">
                                                                                                         <!--begin::Bullet-->
@@ -190,39 +207,59 @@
                                                                                 <!-- Modal -->
                                                                                 <div class="modal fade" id="exampleModal{{ $items->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                                                     <div class="modal-dialog modal-dialog-centered modal-lg">
-                                                                                    <div class="modal-content">
-                                                                                        <div class="modal-header">
-                                                                                        <h5 class="modal-title" id="exampleModalLabel" data-id={{ $items->id }} style="width:90%">{{ $items->Name }}</h5>
-                                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                                            <span aria-hidden="true" style="display:block;">&times;</span>
-                                                                                        </button>
-                                                                                        </div>
-
-                                                                                        <div class="modal-body">
-                                                                                            <div id="subtask_description{{ $items->id }}"  class="{{  $items->Description == null ? 'nulled_task' : 'Sub_task_description' }} sub_task_description" data-ivalue={{  $items->id }}>
-                                                                                                {{  $items->Description == null ? '@Double Tap To Add Description' : $items->Description }}
+                                                                                        <div class="modal-content">
+                                                                                            <div class="modal-header">
+                                                                                                <h5 class="modal-title" id="exampleModalLabel" data-id={{ $items->id }} style="width:90%">{{ $items->Name }}</h5>
+                                                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                                    <span aria-hidden="true" style="display:block;">&times;</span>
+                                                                                                </button>
                                                                                             </div>
 
-                                                                                        </div>
-                                                                                        <div class="modal-footer" style="display:block">
-                                                                                            <div style="font-size:12px">Members:</div>
-                                                                                            <i style="font-size: 25px;" class="far fa-user-circle"></i>
-                                                                                            <div class="dropdown">
-                                                                                                <i class=" flaticon-add-circular-button dropdown-toggle" style="font-size: 25px;"  role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false" ></i>
-                                                                                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                                                                                        <li><a class="dropdown-item" href="#">Action</a></li>
-                                                                                                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                                                                                                        <li><a class="dropdown-item" href="#">Something else here</a></li>
-                                                                                                    </ul>
+                                                                                            <div class="modal-body">
+                                                                                                <div id="subtask_description{{ $items->id }}"  class="{{  $items->Description == null ? 'nulled_task' : 'Sub_task_description' }} sub_task_description" data-ivalue={{  $items->id }}>
+                                                                                                    {{  $items->Description == null ? '@Double Tap To Add Description' : $items->Description }}
+                                                                                                </div>
+
                                                                                             </div>
+                                                                                            <div class="modal-footer" style="display:block">
+                                                                                                <div class="d-flex ">
 
+                                                                                                        @foreach ( $subtask_employee[$i] as $member[$i] )
+                                                                                                        <div class="dropdown">
+                                                                                                            <div class="ml-2 "  type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
+                                                                                                                <span class="tool" data-tip="{{ $member[$i]->name }} | {{ $member[$i]->position }}">
+                                                                                                                    <i style="font-size: 25px; line-height:35px;" class="far fa-user-circle mr-2"></i>
+                                                                                                                </span>
+                                                                                                            </div>
+                                                                                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                                                                                    <a class="dropdown-item " href="#"> View Details </a>
+                                                                                                                    <a class="dropdown-item " href="#"> Remove Member </a>
 
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                        @endforeach
 
+                                                                                                        <div class="dropdown">
+                                                                                                            <div class="ml-2 "  type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
+                                                                                                                    <i class=" flaticon-add-circular-button " style="font-size: 25px;"></i>
+                                                                                                            </div>
+                                                                                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                                                                                    <span class="dropdown-item text-primary" href="#"> Assign Member </span>
+                                                                                                                    <hr style="margin: 0px;">
+                                                                                                                @foreach ($employee as $person )
+                                                                                                                    <a class="dropdown-item" href="{{ route("manager.assign_subtask" , [$items->id , encrypt($person->id)]) }}">{{ $person->name }} </a>
+                                                                                                                @endforeach
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                </div>
+                                                                                            </div>
                                                                                         </div>
-                                                                                    </div>
                                                                                     </div>
                                                                                 </div>
                                                                               {{-- sub task details ends --}}
+                                                                              @php
+                                                                                 $i++;
+                                                                              @endphp
                                                                         @endforeach
                                                                     @endif
                                                                     </div>
@@ -929,13 +966,12 @@
       statusbar: false,
    });
   </script>
-
+  <script src={{ asset("dev-assets/js/manager/count_down_timer.js") }}></script>
   <script src="{{ asset("dev-assets/js/tag2.input.js") }}"></script>
   <script src="{{ asset("js/typeahead-main.js") }}" ></script>
   <script src="{{ asset("dev-assets/js/manager/typehead.js") }}"></script>
   {{-- filepond JS --}}
   <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
   <script src="{{ asset("dev-assets/js/single_project_file_upload.js") }}"></script>
-  <script src="//cdn.bootcss.com/toastr.js/latest/js/toastr.min.js"></script>
 
 @endsection

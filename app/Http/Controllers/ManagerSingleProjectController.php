@@ -36,10 +36,15 @@ class ManagerSingleProjectController extends Controller
 
             //Project Subtask
             $project_subtask = ProjectSubtask::where('project_id', $id)->get();
+            $subtask_employee = [];
+            for ($i = 0; $i < sizeof($project_subtask); $i++) {
+                $project_subtask[$i]->assign_employee = rtrim($project_subtask[$i]->assigned_member, ", ");
+                $subtask_employee[$i] = User::find(explode(",", $project_subtask[$i]->assigned_member));
+            }
 
             return view(
                 "manager.single_project",
-                ['project' => $project,  'employee' => $employee, 'client_details' => $client_details, 'project_manager' => $project_manager, 'tasks' => $project_subtask]
+                ['project' => $project,  'employee' => $employee, 'client_details' => $client_details, 'project_manager' => $project_manager, 'tasks' => $project_subtask, 'subtask_employee' => $subtask_employee]
             );
         }
     }

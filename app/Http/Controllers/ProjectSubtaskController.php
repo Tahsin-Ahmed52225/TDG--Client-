@@ -117,4 +117,23 @@ class ProjectSubtaskController extends Controller
             }
         }
     }
+    public function assignSubTask(Request $request, $subtask_id, $employee_id)
+    {
+        if ($request->isMethod("GET")) {
+            $project_subtask = ProjectSubtask::find($subtask_id);
+            if ($project_subtask) {
+                if ($project_subtask->assigned_member == null) {
+                    $project_subtask->assigned_member = decrypt($employee_id);
+                } else {
+                    $already_added_member =   explode(",", $project_subtask->assigned_member);
+                    if (!in_array(decrypt($employee_id), $already_added_member)) {
+                        $project_subtask->assigned_member = $project_subtask->assigned_member . "," . decrypt($employee_id);
+                    }
+                }
+                $project_subtask->save();
+                return redirect()->back();
+            } else {
+            }
+        }
+    }
 }

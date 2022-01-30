@@ -115,28 +115,4 @@ class SingleProjectController extends Controller
             //dd($request->file_index);
         }
     }
-
-    /**
-     * deleting single subtask
-     * @param Request @param project_id
-     * @return single_project_page
-     *
-     */
-    public function deleteSubtask(Request $request)
-    {
-        if ($request->isMethod("GET")) {
-            $project_details = ProjectDetails::where("project_id", $request->project_id)->first();
-            if ($project_details) {
-                $new_task = [];
-                $old_tasks =  json_decode($project_details->subtask);
-                foreach ($old_tasks as $key => $task) {
-                    if ($task->id != $request->task_id) {
-                        array_push($new_task, $task);
-                    }
-                }
-                $project_details->update(["subtask" => json_encode($new_task)]);
-                return json_encode($new_task);
-            }
-        }
-    }
 }
