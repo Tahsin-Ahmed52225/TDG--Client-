@@ -10,4 +10,9 @@ class ProjectFile extends Model
     protected $fillable = [
         'project_id', 'file_path', 'uploaded_by'
     ];
+
+    public function project()
+    {
+        return $this->belongsTo('App\Project');
+    }
 }

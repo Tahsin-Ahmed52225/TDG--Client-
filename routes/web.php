@@ -138,7 +138,7 @@ Route::prefix('manager')->name('manager.')->middleware(['auth', 'manager'])->gro
     #Single Project Route - ( Project Discussion )
     Route::post('single-project/{id}/add-discussion', 'SingleProjectController@addDiscussion')->name("add_discussion");
     #Single Project Route - ( Project File )
-    Route::post('add-project-file/{project_id}', 'SingleProjectController@addProjectFile')->name("add_project_file");
+    Route::post('add-project-file/{project_id}', 'ProjectFileController@create')->name("add_project_file");
     Route::post('delete-file/{project_id}', 'SingleProjectController@deleteFile')->name("delete_file");
 
     ######Additional helping routes for projects
