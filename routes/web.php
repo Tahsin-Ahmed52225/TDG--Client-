@@ -44,6 +44,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/all-member', 'ProjectController@allMember')->name("all_member");
     Route::post('/all-client', 'ProjectController@allClient')->name("all_client");
     Route::post('/exiting-member', 'ProjectController@exitingMember')->name("exiting_member");
+    Route::post('/temp-project-upload', 'ProjectFileController@tempUpload')->name("temp_upload_file");
 
     ######Logout Route
     Route::get('/logout', 'AuthController@logout')->name("logout");

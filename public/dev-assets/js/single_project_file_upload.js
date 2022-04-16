@@ -1,20 +1,16 @@
-const url = "/manager/add-project-file/" + $("#tdg_project_name").data("ivalue");
 const inputElement = document.querySelector('input[name="fileUpload"]');
 const pond = FilePond.create(inputElement);
-pond.allowMultiple = true;
+pond.allowMultiple = false;
 
 pond.setOptions({
     server: {
-        url: '/manager/add-project-file/' + $("#tdg_project_name").data("ivalue"),
+        url: './temp-project-upload',
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         process: {
             onload: (response) => {
-
-                if (response === "Success") {
-                    setInterval('location.reload()', 4000);
-                }
+                console.log(response);
             },
         },
     }
