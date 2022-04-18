@@ -59,10 +59,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::match(['get', 'post'], '/my-profile', 'AdminController@myProfile')->name('my_profile');
 
     #Admin member routes
-    Route::match(['get', 'post'], '/view-member', 'AdminController@viewMember')->name('view_member');
-    Route::get('/delete-member', 'AdminController@deleteMember')->name("deleteMember");
-    Route::get('/update-member', 'AdminController@updateMember')->name("updateMember");
-    Route::match(['get', 'post'], '/add-member', 'AdminController@addMember')->name('add_member');
+    Route::match(['get', 'post'], '/view-member', 'AdminMemberController@viewMember')->name('view_member');
+    Route::get('/delete-member', 'AdminMemberController@deleteMember')->name("deleteMember");
+    Route::get('/update-member', 'AdminMemberController@updateMember')->name("updateMember");
+    Route::match(['get', 'post'], '/add-member', 'AdminMemberController@addMember')->name('add_member');
 
     #Admin Client routes
     Route::match(['get', 'post'], '/view-clients', 'AdminController@viewClients')->name('view_clients');

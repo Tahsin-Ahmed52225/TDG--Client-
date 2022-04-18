@@ -28,7 +28,7 @@ class EmployeeSingleProjectController extends Controller
 
             if ($project_details) {
                 $tasks = json_decode($project_details->subtask);
-                $project_manager = $project_details->project_manager_id;
+                $project_manager = $project->project_manager_id;
                 //  dd($project_details->subtask);
             } else {
                 $tasks = null;
@@ -37,5 +37,4 @@ class EmployeeSingleProjectController extends Controller
             return view("employee.single_project", ['project' => $project, 'tasks' => $tasks, 'user' => $user, 'project_manager' => $project_manager, 'client_details' => $client_details]);
         }
     }
-    //
 }

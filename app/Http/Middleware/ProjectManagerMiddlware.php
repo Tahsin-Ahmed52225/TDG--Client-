@@ -3,7 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use App\ProjectDetails;
+use App\Project;
 use Illuminate\Support\Facades\Auth;
 
 class ProjectManagerMiddlware
@@ -23,7 +23,7 @@ class ProjectManagerMiddlware
             $id = $request->project_id;
         }
         if (Auth::user()->isEmployee()) {
-            $project = ProjectDetails::where("project_id", "=", $id)->first();
+            $project = Project::where("id", "=", $id)->first();
             //dd($project);
             if ($project) {
                 // dd(auth()->user()->id);
