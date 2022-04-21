@@ -55,22 +55,28 @@ Route::middleware('auth')->group(function () {
 
 //Admin Route
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
+    #Admin Dashboard
     Route::match(['get', 'post'], '/dashboard', 'AdminController@index')->name('dashboard');
+
+    #Admin Profile
     Route::match(['get', 'post'], '/my-profile', 'AdminController@myProfile')->name('my_profile');
 
     #Admin member routes
-    Route::match(['get', 'post'], '/view-member', 'AdminMemberController@viewMember')->name('view_member');
-    Route::get('/delete-member', 'AdminMemberController@deleteMember')->name("deleteMember");
-    Route::get('/update-member', 'AdminMemberController@updateMember')->name("updateMember");
-    Route::match(['get', 'post'], '/add-member', 'AdminMemberController@addMember')->name('add_member');
+    Route::match(['get', 'post'], '/view-member', 'Admin\AdminMemberController@viewMember')->name('view_member');
+    Route::match(['get', 'post'], '/add-member', 'Admin\AdminMemberController@addMember')->name('add_member');
+    Route::get('/delete-member', 'Admin\AdminMemberController@deleteMember')->name("deleteMember");
+    Route::get('/update-member', 'Admin\AdminMemberController@updateMember')->name("updateMember");
+
 
     #Admin Client routes
     Route::match(['get', 'post'], '/view-clients', 'AdminController@viewClients')->name('view_clients');
     Route::match(['get', 'post'], '/view-invitations', 'AdminController@viewInvitations')->name('view_invitations');
-    // Route::post('/invite-client', 'AdminController@inviteClient')->name('invite_client');
+
+
     #Admin Project routes
     Route::match(['get', 'post'], '/view-projects', 'ProjectController@view')->name('view_project');
     Route::match(['get', 'post'], '/add-project', 'ProjectController@create')->name('add_project');
+
     #Single Project Routes
     Route::match(['get', 'post'], '/projects/{id}', 'SingleProjectController@singleProject')->name('single_project');
 });

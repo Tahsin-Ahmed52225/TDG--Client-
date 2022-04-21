@@ -28,20 +28,6 @@ class AdminController extends Controller
     {
         return view("admin.my_profile");
     }
-    public function deleteMember(Request $request)
-    {
-        if ($request->ajax()) {
-            $user = User::find($request->data);
-            if ($user) {
-                $user->delete();
-                Session::flash('success', 'Member removed successfully');
-                return View::make('partials/flash_message');
-            } else {
-                Session::flash('error', 'Something is wrong');
-                return View::make('partials/flash_message');
-            }
-        }
-    }
     /**
      * Admin view all clients
      * @param Request
