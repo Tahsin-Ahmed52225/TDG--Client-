@@ -46,6 +46,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/exiting-member', 'ProjectController@exitingMember')->name("exiting_member");
     Route::post('/temp-project-upload', 'ProjectFileController@tempUpload')->name("temp_upload_file");
 
+    ######Profile Routes
+    Route::match(['get', 'post'], '/my-profile', 'Common\ProfileController@myProfileView')->name('my_profile');
+
     ######Logout Route
     Route::get('/logout', 'AuthController@logout')->name("logout");
 });
@@ -56,7 +59,7 @@ Route::middleware('auth')->group(function () {
 //Admin Route
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     #Admin Dashboard
-    Route::match(['get', 'post'], '/dashboard', 'AdminController@index')->name('dashboard');
+    Route::match(['get', 'post'], '/dashboard', 'Admin\AdminDashboardController@view')->name('dashboard');
 
     #Admin Profile
     Route::match(['get', 'post'], '/my-profile', 'AdminController@myProfile')->name('my_profile');
