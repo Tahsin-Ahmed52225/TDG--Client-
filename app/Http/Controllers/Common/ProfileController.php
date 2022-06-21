@@ -20,4 +20,16 @@ class ProfileController extends Controller
             return view('common.profile.index', ['user' => $user]);
         }
     }
+    public function editProfile(Request $request){
+        if($request->isMethod("GET")){
+            $user = auth()->user();
+            return view('common.profile.edit', ['user' => $user]);
+        }
+    }
+    public function ChangePassword(Request $request){
+        if($request->isMethod("POST")){
+            // $user = auth()->user();
+            // return view('common.profile.change_password', ['user' => $user]);
+        }
+    }
 }

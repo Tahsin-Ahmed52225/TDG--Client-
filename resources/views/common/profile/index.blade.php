@@ -1,12 +1,5 @@
-@if(Auth::user()->role == "admin")
-    @extends('layouts.admin_layout')
-@elseif(Auth::user()->role == "employee" && Auth::user()->position == "Manager")
-    @extends('layouts.admin_layout')
-@elseif(Auth::user()->role == "employee" && Auth::user()->position != "Manager")
-    @extends('layouts.admin_layout')
-@else(Auth::user()->role == "client")
-    @extends('layouts.admin_layout')
-@endif
+
+@extends("layouts.".Auth::user()->role."_layout")
 
 @section("links")
 <!--begin::Page Vendors Styles(used by this page)-->
@@ -14,8 +7,6 @@
 <!--end::Page Vendors Styles-->
 @endsection
 @section('content')
-
-
 <div class="content d-flex flex-column flex-column-fluid justify-content-center" id="kt_content">
     <!--begin::Entry-->
     <div >
@@ -30,8 +21,8 @@
                         <div class="card-body">
                             <!--begin::User-->
                             <div>
-                                <div class="image-input" id="kt_image_4" style="background-image: url(assets/media/users/blank.png)">
-                                    <div class="image-input-wrapper" style="background-image: url({{ ($user->image == NULL) ? asset("./files/profile_pics/pp.jpg") :  asset("files/profile_pics/".$user->image)}})"></div>
+                                <div class="image-input" id="kt_image_4" style="background-image: url({{ ($user->image == NULL) ? asset("assets/media/users/blank.png") :  asset("files/profile_pics/".$user->image)}})">
+                                    <div class="image-input-wrapper"></div>
                                </div>
 
                             </div>
@@ -59,7 +50,7 @@
                             <!--begin::Nav-->
                             <div class="navi navi-bold navi-hover navi-active navi-link-rounded">
                                 <div class="navi-item mb-2">
-                                    <a href="custom/apps/profile/profile-1/account-information.html" class="navi-link py-4 active">
+                                    <a  data-toggle="modal" data-target="#exampleModal" class="navi-link py-4 active">
                                         <span class="navi-icon mr-2">
                                             <span class="svg-icon">
                                                 <!--begin::Svg Icon | path:assets/media/svg/icons/Code/Compiling.svg-->
@@ -92,7 +83,7 @@
                         <div class="card-header py-5" >
                             <div class="card-title w-100 justify-content-between">
                                     <div class="float-left">   <h3 class="card-label font-weight-bolder text-dark">Account Information</h3> </div>
-                                    <div> <a href="#"> <button class="btn btn-sm btn-primary ">Edit Profile</button> </a> </div>
+                                    <div> <a href="{{ route("edit_profile") }}"> <button class="btn btn-sm btn-primary ">Edit Profile</button> </a> </div>
                             </div>
 
 
@@ -163,6 +154,33 @@
 </div>
 
 
+
+
+
+{{-- modal starts  --}}
+
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          ...
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{{-- modal ends  --}}
 @endsection
 
 @section("scripts")

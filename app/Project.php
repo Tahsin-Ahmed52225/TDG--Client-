@@ -26,7 +26,7 @@ class Project extends Model
      */
     static public function clientProject()
     {
-        $client_projects =  DB::table('project')->where('client_id', auth()->user()->id)->where('status', '!=', 'todo')->get(['id', 'name']);
+        $client_projects =  DB::table('project')->where('client_id', auth()->user()->id)->where('status', '!=', 'todo')->get(['id', 'project_name']);
         return $client_projects;
     }
 

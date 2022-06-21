@@ -16,6 +16,7 @@ class AdminDashboardController extends Controller
     public function view(Request $request)
     {
         if ($request->isMethod('GET')) {
+
             return view('admin.dashboard');
         }
     }

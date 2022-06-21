@@ -21,9 +21,9 @@ class ClientController extends Controller
     public function index(Request $request)
     {
         if ($request->isMethod("GET")) {
-            $running_projects = count(Project::where("status", "=", "running")->where("client_id", "=", Auth::user()->id)->get(['id']));
-            $complete_projects = count(Project::where("status", "=", "complete")->where("client_id", "=", Auth::user()->id)->get(['id']));
-            $on_hold = count(Project::where("status", "=", "stopped")->where("client_id", "=", Auth::user()->id)->get(['id']));
+            $running_projects = count(Project::where("status", "=", "running")->where("client_id", "=", Auth::user()->id)->get());
+            $complete_projects = count(Project::where("status", "=", "complete")->where("client_id", "=", Auth::user()->id)->get());
+            $on_hold = count(Project::where("status", "=", "stopped")->where("client_id", "=", Auth::user()->id)->get());
 
 
             return view('client.dashboard', ['running_projects' => $running_projects, 'complete_projects' => $complete_projects, 'on_hold' => $on_hold]);

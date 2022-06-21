@@ -47,7 +47,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/temp-project-upload', 'ProjectFileController@tempUpload')->name("temp_upload_file");
 
     ######Profile Routes
-    Route::match(['get', 'post'], '/my-profile', 'Common\ProfileController@myProfileView')->name('my_profile');
+    Route::get('/my-profile', 'Common\ProfileController@myProfileView')->name("my_profile");
+    Route::match(['get', 'post'], '/edit-profile', 'Common\ProfileController@myProfileView')->name('edit_profile');
+    Route::post('/change-password', 'Common\ProfileController@ChangePassword')->name("change_password");
+
+
+
 
     ######Logout Route
     Route::get('/logout', 'AuthController@logout')->name("logout");

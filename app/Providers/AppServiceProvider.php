@@ -25,8 +25,5 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        view()->composer('client.*', function ($view) {
-            $view->with('clientProject', Project::clientProject());
-        });
     }
 }

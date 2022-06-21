@@ -20,7 +20,7 @@
             if (distance < 0) {
                 document.getElementById("heading").style.display = "block";
                 document.getElementById("countdown").style.display = "none";
-                document.getElementById("content").style.display = "block";
+              //  document.getElementById("content").style.display = "block";
                 document.getElementById("timer_section").style.background = "#DC3545";
                 timer_section
                 clearInterval(x);
